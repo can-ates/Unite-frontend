@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import axios from 'axios';
 
 import { makeStyles } from "@material-ui/core/styles";
 import { useTheme } from "@material-ui/core/styles";
@@ -25,7 +26,7 @@ const useStyles = makeStyles(theme => ({
         
     },
     sad: {
-        marginTop: '6.5em',
+        marginTop: '10.5em',
         [theme.breakpoints.down("md")]: {
           marginBottom: "2em"
         },
@@ -36,7 +37,7 @@ const useStyles = makeStyles(theme => ({
     uniteButton: {
         color: 'white',
         margin: '0 auto',
-        marginTop: '1em',
+        marginTop: '5em',
         backgroundColor: theme.palette.common.orange,
         minWidth: '10em',
         '&:hover': {
@@ -46,23 +47,30 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const Home = (props) => {
+    const [communities, setCommunities] = useState(null)
 
     const classes = useStyles();
-    const theme = useTheme()
+    const theme = useTheme();
+
+    useEffect(() => {
+        axios.get('http://localhost:3002/api/allCommunities').then((res) => {
+            setCommunities(res.data.community)
+        })
+    })
 
     return (
         <div className={classes.hero}>
             <div  style={{position: 'relative', height: '100%', display: 'flex', alignItems: 'center'}}>
                 <Grid container direction='column' alignItems='center' className={classes.sad}>
                     <Grid item>
-                        <Typography variant='h2' align='center'>
-                            All your communities in one place
+                        <Typography variant='h1' align='center'>
+                            All communities in one place
                         </Typography>
                     </Grid>
                     <Grid item>
                         <Button
                             component={Link}
-                            to="/register"
+                            to="/joinus"
                             className={classes.uniteButton}
                             variant="contained"
                             size='large'

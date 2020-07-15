@@ -51,7 +51,7 @@ const useStyles = makeStyles(theme => ({
         marginLeft: 'auto'
     },
     tab: {
-        color: '#000',
+        color: '#fff',
         minWidth: '6.5em',
         marginLeft: '1.5em'
     }

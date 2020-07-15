@@ -8,7 +8,8 @@ export default createMuiTheme({
     palette: {
         common: {
           blue: arcBlue,
-          orange: arcOrange
+          orange: arcOrange,
+          white: '#ffffff'
         },
         primary: {
           main: arcOrange
@@ -30,6 +31,13 @@ export default createMuiTheme({
           fontSize: "1rem",
           textTransform: "none",
           color: "white"
+        },
+        h1: {
+          fontFamily: "Raleway",
+          fontWeight: 700,
+          fontSize: "4.2rem",
+          color: 'white',
+          lineHeight: 1.5
         },
         h2: {
           fontFamily: "Raleway",
@@ -60,28 +68,65 @@ export default createMuiTheme({
           color: arcGrey
         },
         subtitle2: {
+          fontFamily: "Raleway",
           color: "white",
           fontWeight: 300,
           fontSize: "1.25rem"
         },
         body1: {
+          fontFamily: "Raleway",
           fontSize: "1.25rem",
           color: arcGrey,
           fontWeight: 300
+        },
+        body2: {
+          fontFamily: "Raleway",
+          fontSize: "1rem",
+          color: 'white',
+          fontWeight: 700
         },
         caption: {
           fontSize: "1rem",
           fontWeight: 300,
           color: arcGrey
         },
-        learnButton: {
-          borderColor: arcBlue,
-          borderWidth: 2,
-          textTransform: "none",
-          color: arcBlue,
-          borderRadius: 50,
-          fontFamily: "Roboto",
-          fontWeight: "bold"
-        }
       },
+      overrides: {
+        MuiInputLabel: {
+          root: {
+            color: 'white',
+            fontSize: "1rem",
+            fontFamily: "Raleway",
+            fontWeight: 400
+          }
+        },
+        MuiInput: {
+          root: {
+            color: arcOrange,
+            fontFamily: "Raleway",
+            fontSize: '1rem',
+            fontWeight: 600
+          },
+          underline: {
+            "&:before": {
+              borderBottom: `2px solid white`,
+              fontFamily: "Raleway",
+            },
+            "&:hover:not($disabled):not($focused):not($error):before": {
+              borderBottom: `2px solid ${arcOrange}`,
+              fontFamily: "Raleway",
+            }
+          }
+        },
+        MuiFormHelperText: {
+          root: {
+            color: '#000',
+            '&.Mui-error': {
+              color: '#ff7777',
+              fontWeight: 500
+            }
+          },
+          
+        },
+      }
 })
