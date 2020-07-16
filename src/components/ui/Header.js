@@ -114,12 +114,13 @@ const Header = (props) => {
             >
                 {pages.map((page, i) => (
                     <Tab
-                        key={`${page}${i}`}
+                        key={`${page}-${i}`}
                         className={classes.tab}
                         component={Link}
                         to={page.link}
                         label={page.name}
                         disableRipple
+                        value={page.activeIndex}
 
                     />
                 ))}

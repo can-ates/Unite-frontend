@@ -105,17 +105,21 @@ export default createMuiTheme({
             color: arcOrange,
             fontFamily: "Raleway",
             fontSize: '1rem',
-            fontWeight: 600
+            fontWeight: 600,
+            '&.Mui-error': {
+              borderBottom: `1px solid red`
+            }
           },
           underline: {
-            "&:before": {
+            "&:not($error):before": {
               borderBottom: `2px solid white`,
               fontFamily: "Raleway",
             },
             "&:hover:not($disabled):not($focused):not($error):before": {
               borderBottom: `2px solid ${arcOrange}`,
               fontFamily: "Raleway",
-            }
+            },
+          
           }
         },
         MuiFormHelperText: {
@@ -123,10 +127,16 @@ export default createMuiTheme({
             color: '#000',
             '&.Mui-error': {
               color: '#ff7777',
-              fontWeight: 500
+              fontWeight: 600
             }
           },
           
         },
+        MuiSnackbar : {
+          root: {
+            fontFamily: 'Raleway',
+            fontSize: '0.5rem',
+          }
+        }
       }
 })

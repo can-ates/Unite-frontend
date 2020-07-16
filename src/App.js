@@ -1,13 +1,12 @@
 import React, {useState} from 'react';
-import {ThemeProvider} from "@material-ui/core/styles"
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 
 import Header from './components/ui/Header'
 import Home from './components/Home'
 import Community from './components/Community'
 import JoinUs from './components/JoinUs'
 
-import theme from "./components/ui/Theme"
+
 
 
 function App() {
@@ -16,8 +15,7 @@ function App() {
 
 
   return (
-    <ThemeProvider theme={theme}>
-      <BrowserRouter>
+    <React.Fragment>
         <Header
           value={value}
           setValue={setValue}       
@@ -55,8 +53,7 @@ function App() {
               )}
             />
           </Switch>
-      </BrowserRouter>
-    </ThemeProvider>
+    </React.Fragment>
   );
 }
 

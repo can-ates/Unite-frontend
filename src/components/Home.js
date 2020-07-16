@@ -52,11 +52,11 @@ const Home = (props) => {
     const classes = useStyles();
     const theme = useTheme();
 
-    useEffect(() => {
-        axios.get('http://localhost:3002/api/allCommunities').then((res) => {
-            setCommunities(res.data.community)
-        })
-    })
+    // useEffect(() => {
+    //     axios.get('http://localhost:3002/api/allCommunities').then((res) => {
+    //         setCommunities(res.data.community)
+    //     })
+    // })
 
     return (
         <div className={classes.hero}>
