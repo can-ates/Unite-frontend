@@ -19,7 +19,11 @@ export default function(state = {}, action) {
                 ...state,
                 userData: action.payload
             }
-
+        case AUTH_USER:
+            return {
+                ...state,
+                userData: action.payload
+            }
         default:
             return state
     }

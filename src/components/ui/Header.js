@@ -14,6 +14,7 @@ import Typography from '@material-ui/core/Typography';
 
 import Unite from '../../assets/unite.png'
 
+import Auth from '../../hoc/Auth'
 
 function ElevationScroll(props) {
     const { children } = props;
@@ -60,7 +61,7 @@ const useStyles = makeStyles(theme => ({
 
 const Header = (props) => {
     const [toggleHeader, setToggleHeader] = useState(false)
-
+    
 
     const pages = [
         { name: "Home", link: "/", activeIndex: 0 },
@@ -73,6 +74,7 @@ const Header = (props) => {
 
 
     useEffect(() => {
+        
         [...pages].forEach(page => {
           switch (window.location.pathname) {
             case `${page.link}`:
@@ -84,6 +86,7 @@ const Header = (props) => {
               break;
           }
         });
+        
       }, [props.value, pages, props]);
     
     const handleChange = (newValue) => {
@@ -91,7 +94,7 @@ const Header = (props) => {
     }    
     
     useEffect(() => {
-        window.addEventListener('scroll', handleScroll);  //başka bi route'a geçersek componenWillUnmount ile listenerı remove etmemiz gerek
+        window.addEventListener('scroll', handleScroll);
     })
 
     const handleScroll = () => {
@@ -121,7 +124,6 @@ const Header = (props) => {
                         label={page.name}
                         disableRipple
                         value={page.activeIndex}
-
                     />
                 ))}
             </Tabs>

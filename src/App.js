@@ -9,9 +9,10 @@ import JoinUs from './components/JoinUs'
 
 
 
-function App() {
-  const [value, setValue] = useState(0);
 
+
+function App() {
+  const [value, setValue] = useState(0)
 
 
   return (
@@ -20,39 +21,39 @@ function App() {
           value={value}
           setValue={setValue}       
         />
-          <Switch>
-            <Route
-              exact
-              path="/"
-              render={props => (
-                <Home
-                  {...props}
-                  setValue={setValue}                
-              />
-              )}
+        <Switch>
+          <Route
+            exact
+            path="/"
+            render={props => (
+              <Home
+                {...props}
+                setValue={setValue}                
             />
-          
-            <Route
-              exact
-              path="/communities"
-              render={props => (
-                <Community
-                  {...props}
-                  setValue={setValue}                  
-              />
             )}
           />
-            <Route
-              exact
-              path="/joinus"
-              render={props => (
-                <JoinUs
-                  {...props}
-                  setValue={setValue}
-              />
-              )}
+        
+          <Route
+            exact
+            path="/communities"
+            render={props => (
+              <Community
+                {...props}
+                setValue={setValue}                  
             />
-          </Switch>
+          )}
+        />
+          <Route
+            exact
+            path="/joinus"
+            render={props => (
+              <JoinUs
+                {...props}
+                setValue={setValue}
+            />
+            )}
+          />
+        </Switch>
     </React.Fragment>
   );
 }

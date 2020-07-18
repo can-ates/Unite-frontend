@@ -18,9 +18,10 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { Typography } from "@material-ui/core";
 
 
-import gradient from '../assets/Bullseye-Gradient.svg'
+import gradient from '../assets/shattered-island.gif'
 import * as actions from '../actions/user'
 
+import Auth from '../hoc/Auth'
 
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -52,13 +53,19 @@ const useStyles = makeStyles(theme => ({
         marginTop: '2em',
         background: 'transparent',
         minWidth: '25em',
-        boxShadow: '0px 0px 7px 6px rgba(0,0,0,0.75);',
+        boxShadow: '0px 0px 5px 2px rgba(255,255,255,0.75);',
+        '&:hover' : {
+            boxShadow: '0px 0px 5px 5px rgb(255, 186, 96, 0.75)'
+        }
     },
     root1: {    
         marginTop: '2em',
         minWidth: '25em',
         background: 'transparent',
-        boxShadow: '0px 0px 7px 6px rgba(0,0,0,0.75);',
+        boxShadow: '0px 0px 5px 2px rgba(255,255,255,0.75);',
+        '&:hover' : {
+            boxShadow: '0px 0px 5px 5px rgb(255, 186, 96, 0.75)'
+        }
     },
     Fields: {
         padding: '0 3.5em 2em 3.5em'
@@ -122,14 +129,13 @@ const JoinUs = (props) => {
     }
 
     const handleLogin =  () => {
-       props.loginUser({email: loginEmail, password: loginPassword}, (data) => {
-           if(data.loginSuccess === false){
-               setLoginError(data.message)
-               handleMessage()
-           } else props.history.push('/')
-       })
-    }
-    
+        props.loginUser({email: loginEmail, password: loginPassword}, (data) => {
+            if(data.loginSuccess === false){
+                setLoginError(data.message)
+                handleMessage()
+            } 
+        })
+     }
 
     return (
         <div className={classes.hero}>
@@ -191,7 +197,7 @@ const JoinUs = (props) => {
                                                 type='email'
                                                 error={emailHelper ? true : false}
                                                 helperText={emailHelper ? emailHelper : null}
-                                                id="email"
+                                                id="emailRegister"
                                                 required
                                                 name="email"
                                                 value={email}
@@ -207,7 +213,7 @@ const JoinUs = (props) => {
                                                 error={passwordHelper ? true : false}
                                                 helperText={passwordHelper ? passwordHelper : null}
                                                 required
-                                                id="password"
+                                                id="passwordRegister"
                                                 name="password"
                                                 value={password}
                                                 onChange={e => {setPassword(e.target.value); setPasswordHelper('')}}
@@ -267,7 +273,7 @@ const JoinUs = (props) => {
                                             label="Email"
                                             fullWidth
                                             type='email'
-                                            id="email"
+                                            id="emailLogin"
                                             required
                                             name="email"
                                             value={loginEmail}
@@ -281,7 +287,7 @@ const JoinUs = (props) => {
                                             fullWidth
                                             type='password'
                                             required
-                                            id="password"
+                                            id="passwordLogin"
                                             name="password"
                                             value={loginPassword}
                                             onChange={e => setLoginPassword(e.target.value)}
@@ -312,4 +318,10 @@ const JoinUs = (props) => {
     )
     }
 
-export default connect(null, actions)(JoinUs)
+    function mapStateToProps (state) {
+        return {
+            user: state.user
+        }
+    }
+
+export default Auth(connect(mapStateToProps, actions)(JoinUs), true)

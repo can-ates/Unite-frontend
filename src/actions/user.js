@@ -9,7 +9,7 @@ import {
 
 export const registerUser = (dataToSubmit, cb) => dispatch => {
 
-        axios.post("http://localhost:3002/api/users/register", dataToSubmit)
+        axios.post("http://localhost:3002/api/users/register", dataToSubmit, {withCredentials: true})
         .then(response => {
 
             if(response.data.registerSuccess) {
@@ -24,15 +24,23 @@ export const registerUser = (dataToSubmit, cb) => dispatch => {
 
 export const loginUser = (dataToSubmit, cb) => dispatch => {
 
-    axios.post("http://localhost:3002/api/users/login", dataToSubmit)
+
+    axios.post("http://localhost:3002/api/users/login", dataToSubmit, {withCredentials: true})
     .then(response => {
 
-        if(response.data.loginSuccess) {
-            dispatch({type: LOGIN_USER, payload: response.data})
-            cb(false)
-        } else {
-            cb(response.data)
-        }
+        cb(response.data)
+        dispatch({type: LOGIN_USER, payload: response.data})
+
+    });
+}
+
+export const authUser = (cb) => dispatch => {
+
+    axios.get("http://localhost:3002/api/users/auth", {withCredentials: true})
+    .then(response => {
+
+        cb(response.data)
+        dispatch({type: AUTH_USER, payload: response.data})
 
     });
 }

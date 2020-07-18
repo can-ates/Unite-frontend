@@ -11,6 +11,7 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 import passion from '../assets/passion.jpg'
 import { Typography } from "@material-ui/core";
 
+import Auth from '../hoc/Auth'
 
 const useStyles = makeStyles(theme => ({
     hero: {
@@ -87,4 +88,4 @@ const Home = (props) => {
     )
 }
 
-export default Home
+export default Auth(Home, false)
