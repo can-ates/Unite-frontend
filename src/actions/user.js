@@ -9,7 +9,7 @@ import {
 
 export const registerUser = (dataToSubmit) =>  {
 
-        const res = axios.post("http://localhost:3002/api/users/register", dataToSubmit, {withCredentials: true})
+        const res = axios.post("/api/users/register", dataToSubmit, {withCredentials: true})
         .then(response => response.data)
 
         return { type: REGISTER_USER, payload: res}
@@ -18,7 +18,7 @@ export const registerUser = (dataToSubmit) =>  {
 export const loginUser =  (dataToSubmit)  =>  {
 
     
-        const res = axios.post("http://localhost:3002/api/users/login", dataToSubmit, {withCredentials: true})
+        const res = axios.post("/api/users/login", dataToSubmit, {withCredentials: true})
         .then(response => response.data)
         
         return {type: LOGIN_USER, payload: res}
@@ -30,7 +30,7 @@ export const loginUser =  (dataToSubmit)  =>  {
 export  const  authUser = () => {
 
     
-        const res = axios.get("http://localhost:3002/api/users/auth", {withCredentials: true})
+        const res = axios.get("/api/users/auth", {withCredentials: true})
         .then(response => response.data)
 
         return {
@@ -42,7 +42,7 @@ export  const  authUser = () => {
 export const  logOutUser =  () =>  {
     
     
-        const res = axios.get('http://localhost:3002/api/users/logout', {withCredentials: true})
+        const res = axios.get('/api/users/logout', {withCredentials: true})
         .then(response => response.data)
         
         return {
