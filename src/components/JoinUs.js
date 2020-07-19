@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import axios from 'axios';
-import {connect} from 'react-redux'
+import {useSelector, connect} from 'react-redux'
+
+
 
 import { makeStyles } from "@material-ui/core/styles";
 import { useTheme } from "@material-ui/core/styles";
@@ -81,6 +82,8 @@ const useStyles = makeStyles(theme => ({
 
 
 const JoinUs = (props) => {
+    const user = useSelector(state => state.user.userData)
+    
 
     const [open, setOpen] = useState(false);
 
@@ -116,26 +119,27 @@ const JoinUs = (props) => {
     const theme = useTheme();
 
 
-    const handleRegister =  () => {
-        props.registerUser({name, lastname, email, password}, (data) => {
-            if(data.errors) {
-               
-                data.errors.map((err) => {
+    const handleRegister = () => {
+        props.dispatch(actions.registerUser({name, lastname, email, password})).then(response => {
+            if(response.payload.errors){
+                response.payload.errors.map((err) => {
                     if(err.param === 'email') setEmailHelper(err.msg)
                     if(err.param === 'password') setPasswordHelper(err.msg)
                 })
+        } else props.history.push('/')
+    })}
+
+    const handleLogin = () => {
+
+        props.dispatch(actions.loginUser({email: loginEmail, password: loginPassword})).then(response => {
+            if(response.payload.loginSuccess === false){
+                setLoginError(response.payload.message)
+                handleMessage()
             } else props.history.push('/')
         })
     }
-
-    const handleLogin =  () => {
-        props.loginUser({email: loginEmail, password: loginPassword}, (data) => {
-            if(data.loginSuccess === false){
-                setLoginError(data.message)
-                handleMessage()
-            } 
-        })
-     }
+                
+    
 
     return (
         <div className={classes.hero}>
@@ -318,10 +322,6 @@ const JoinUs = (props) => {
     )
     }
 
-    function mapStateToProps (state) {
-        return {
-            user: state.user
-        }
-    }
+    
 
-export default Auth(connect(mapStateToProps, actions)(JoinUs), true)
+export default Auth(connect()(JoinUs), null)

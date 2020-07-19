@@ -1,24 +1,27 @@
 import React from 'react';
-import {ThemeProvider} from "@material-ui/core/styles"
 import ReactDOM from 'react-dom';
 import {BrowserRouter} from 'react-router-dom'
 import {Provider} from 'react-redux'
+import { composeWithDevTools } from 'redux-devtools-extension';
 import {createStore, applyMiddleware} from 'redux'
-import reduxThunk from 'redux-thunk'
-import { composeWithDevTools } from 'redux-devtools-extension'
+import promiseMiddleware from 'redux-promise'
+import thunk from 'redux-thunk'
 
 
+import {ThemeProvider} from "@material-ui/core/styles"
 import theme from "./components/ui/Theme"
-
+import reducers from './reducers/index'
 import './index.css';
 import App from './App';
 
-import reducers from './reducers/index'
+const middleware =[thunk, promiseMiddleware]
 
 const store = createStore(
   reducers,
-  composeWithDevTools(applyMiddleware(reduxThunk))
+  composeWithDevTools(applyMiddleware(...middleware, promiseMiddleware))
 )
+
+
 
 ReactDOM.render(
   <Provider store={store}>

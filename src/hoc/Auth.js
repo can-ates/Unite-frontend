@@ -1,31 +1,40 @@
 import React from 'react'
 import {connect} from 'react-redux'
+import {withRouter} from 'react-router-dom'
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 import * as actions from '../actions/user'
 
+
 export default function(WrappedComponent, isRestricted){
     class Auth extends React.Component {
-
-    state = {
-        loading: false
-    }
+        constructor(props) {
+          super(props)
+        
+          this.state = {
+            loading: true
+          }
+        }
+        
     
-    componentDidMount() {
-        console.log(this.props)
-        this.props.authUser((cb) => {
-            
-            let user = this.props.user.userData
-                 console.log(cb)
-            // if(!user.isAuth && isRestricted){
-            //     this.props.history.push('/joinus')
-            // } else if(user.isAuth && typeof isRestricted === 'undefined'){
-            //     this.props.history.push('/')
-            // }
+        componentDidMount() {
+        
+        this.props.dispatch(actions.authUser()).then(response => {
 
             this.setState({loading: false})
-        })
 
+            if(!this.props.user.isAuth && isRestricted) {
+                this.props.history.push('/joinus')
+            }
+            else if (this.props.user.isAuth && isRestricted === null) {
+                this.props.history.push('/')
+            }
+        })
+        
+            
+            
+            
+        
     }
 
     render() {
@@ -40,22 +49,20 @@ export default function(WrappedComponent, isRestricted){
 
         return (
             <div>
-                <WrappedComponent  {...this.props} user={this.props.user}/>
+                <WrappedComponent  {...this.props} user={this.props.user} />
             </div>
         )
-    }
-
-    
+    }  
         
     }
 
     function mapStateToProps (state) {
         return {
-            user: state.user
+            user: state.user.userData
         }
     }
     
-    return  connect(mapStateToProps, actions)(Auth)
+    return  connect(mapStateToProps)(withRouter(Auth))
 }
 
 

@@ -83,6 +83,13 @@ const Home = (props) => {
                     </Grid>
                 </Grid>
             </div>
+            <Grid container direction='column'>
+                <Grid item container direction='row'>
+                    <Grid item>1</Grid>
+                    <Grid item>2</Grid>
+                    <Grid item>3</Grid>
+                </Grid>
+            </Grid>
             
         </div>
     )

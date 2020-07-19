@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import {connect} from 'react-redux'
+
 
 import { makeStyles } from "@material-ui/core/styles";
 import useScrollTrigger from "@material-ui/core/useScrollTrigger";
@@ -15,6 +17,7 @@ import Typography from '@material-ui/core/Typography';
 import Unite from '../../assets/unite.png'
 
 import Auth from '../../hoc/Auth'
+import * as actions from '../../actions/user'
 
 function ElevationScroll(props) {
     const { children } = props;
@@ -59,8 +62,12 @@ const useStyles = makeStyles(theme => ({
 }))
 
 
+
 const Header = (props) => {
+    
+    
     const [toggleHeader, setToggleHeader] = useState(false)
+    const [toggleLogOut, setToggleLogOut] = useState(false)
     
 
     const pages = [
@@ -68,8 +75,6 @@ const Header = (props) => {
         {
           name: "Communities", link: "/communities", activeIndex: 1
         },
-        { name: "Join Us", link: "/joinus", activeIndex: 2 },
-        { name: "Logout", link: "/contact", activeIndex: 3 }
       ];
 
 
@@ -86,6 +91,10 @@ const Header = (props) => {
               break;
           }
         });
+
+        window.addEventListener('scroll', ()=> {
+            window.scrollY > 0 ? setToggleHeader(true) : setToggleHeader(false)
+        });
         
       }, [props.value, pages, props]);
     
@@ -93,18 +102,17 @@ const Header = (props) => {
         props.setValue(newValue);
     }    
     
-    useEffect(() => {
-        window.addEventListener('scroll', handleScroll);
-    })
-
-    const handleScroll = () => {
-        window.scrollY > 0 ? setToggleHeader(true) : setToggleHeader(false)
+    const handleLogOut = () => {
+        props.dispatch(actions.logOutUser()).then(() => {
+            setToggleLogOut(false)
+        })
     }
 
 
     const classes = useStyles();
     const theme = useTheme()
 
+    
 
     const tabs = (
         <React.Fragment>
@@ -126,6 +134,25 @@ const Header = (props) => {
                         value={page.activeIndex}
                     />
                 ))}
+                {
+                    props.user.isAuth ? null : <Tab
+                        className={classes.tab}
+                        disableRipple
+                        label='Join us'
+                        component={Link}
+                        to='/joinus'
+                        value={2}
+                    />
+                }
+                {
+                    props.user.isAuth ? <Tab 
+                        className={classes.tab}
+                        disableRipple
+                        label='Log Out'
+                        onClick={handleLogOut}
+                        value={3}
+                    /> : null
+                }
             </Tabs>
         </React.Fragment>
     )
@@ -152,4 +179,7 @@ const Header = (props) => {
     )
 }
 
-export default Header
+
+
+
+export default Auth(connect()(Header))
