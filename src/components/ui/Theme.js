@@ -9,7 +9,8 @@ export default createMuiTheme({
         common: {
           blue: arcBlue,
           orange: arcOrange,
-          white: '#ffffff'
+          white: '#ffffff',
+          grey: arcGrey
         },
         primary: {
           main: arcOrange
@@ -58,13 +59,13 @@ export default createMuiTheme({
           fontWeight: 700
         },
         h6: {
-          fontWeight: 500,
+          fontWeight: 700,
           fontFamily: "Raleway",
           color: arcBlue
         },
         subtitle1: {
           fontSize: "1.25rem",
-          fontWeight: 300,
+          fontWeight: 900,
           color: arcGrey
         },
         subtitle2: {

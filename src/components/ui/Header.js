@@ -91,8 +91,11 @@ const Header = (props) => {
               break;
           }
         });
+        if(window.location.pathname === '/joinus'){
+            props.setValue(2)
+        }
 
-        window.addEventListener('scroll', ()=> {
+        window.addEventListener('scroll', () => {
             window.scrollY > 0 ? setToggleHeader(true) : setToggleHeader(false)
         });
         
@@ -131,7 +134,7 @@ const Header = (props) => {
                         to={page.link}
                         label={page.name}
                         disableRipple
-                        value={page.activeIndex}
+                        
                     />
                 ))}
                 {
@@ -141,7 +144,7 @@ const Header = (props) => {
                         label='Join us'
                         component={Link}
                         to='/joinus'
-                        value={2}
+                        
                     />
                 }
                 {
@@ -150,7 +153,7 @@ const Header = (props) => {
                         disableRipple
                         label='Log Out'
                         onClick={handleLogOut}
-                        value={3}
+                        
                     /> : null
                 }
             </Tabs>
