@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from 'axios';
 
-import { makeStyles } from "@material-ui/core/styles";
-import { useTheme } from "@material-ui/core/styles";
+import { makeStyles,useTheme } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
@@ -22,7 +21,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 
-import passion from '../assets/passion.jpg'
+import people from '../assets/people.jpg'
 import ahoy from '../assets/Rainbow-Vortex.svg'
 
 
@@ -31,8 +30,8 @@ import CardCommunity from '../components/utils/card_community'
 
 const useStyles = makeStyles(theme => ({
     hero: {
-        backgroundImage: `url(${passion})`,
-        backgroundPosition: 'center bottom',
+        backgroundImage: `url(${people})`,
+        backgroundPosition: 'center',
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
         height: '85vh',
@@ -43,7 +42,8 @@ const useStyles = makeStyles(theme => ({
         boxShadow: '0px 12px 42px -13px rgba(3,1,0,1)'
     },
     sad: {
-        marginTop: '10.5em',
+        marginTop: '6em',
+        padding: '0 1em',
         [theme.breakpoints.down("md")]: {
           marginBottom: "2em"
         },
@@ -54,15 +54,24 @@ const useStyles = makeStyles(theme => ({
     uniteButton: {
         color: 'white',
         margin: '0 auto',
-        marginTop: '5em',
-        backgroundColor: theme.palette.common.orange,
-        minWidth: '10em',
+        backgroundColor: theme.palette.primary.main,
+        minWidth: '15em',
         '&:hover': {
             backgroundColor: theme.palette.primary.light
-        }
+        },
+        fontFamily: 'Raleway',
+        fontWeight: 600,
+        fontSize: '1.25rem',
+    },
+    heroButton: {
+        color: 'white',
+        backgroundColor: theme.palette.primary.main,
+        '&:hover': {
+            backgroundColor: theme.palette.primary.light
+        },
     },
     findCommunity: {
-        marginTop: '2.5em',
+        marginTop: '3em',
         backgroundImage: `url(${ahoy})`,
         backgroundPosition: 'center',
         backgroundSize: "cover",
@@ -131,10 +140,38 @@ const Home = (props) => {
 
     return (
         <div className={classes.hero}>
-            <div  style={{position: 'relative', height: '100%', display: 'flex', alignItems: 'center'}}>
-                <Grid container direction='column' alignItems='center' className={classes.sad}>
+            <div  style={{position: 'relative', height: '100%', display: 'flex'}}>
+            <Grid container direction='row'  className={classes.sad}>
+                <Grid item container lg={3}> 
+                    <Grid container direction='column' alignItems='center' justify='space-around'>
+                        <Grid item>
+                            <Typography variant='h5' align='center'>
+                                Build a great online community
+                            </Typography>
+                        </Grid>
+                        <Grid item>
+                            <Typography variant='h6' align='center'>
+                                Unite enables you to create amazing and successful communities
+                            </Typography>
+                        </Grid>
+                        <Grid>
+                        <Button
+                            component={Link}
+                            to="/create-community"
+                            className={classes.heroButton}
+                            variant="contained"
+                            size='medium'
+                            onClick={() => props.setValue(3)}
+                            
+                            >
+                            Create your community
+                        </Button>
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid lg={6} item container direction='column' alignItems='center' justify='space-between' >
                     <Grid item>
-                        <Typography variant='h1' align='center'>
+                        <Typography variant='h3' align='center'>
                             All communities in one place
                         </Typography>
                     </Grid>
@@ -152,9 +189,37 @@ const Home = (props) => {
                         </Button>
                     </Grid>
                 </Grid>
+                <Grid item container lg={3}> 
+                    <Grid container direction='column' alignItems='center' justify='space-around'>
+                        <Grid item>
+                            <Typography variant='h5' align='center'>
+                            Experience more
+                            </Typography>
+                        </Grid>
+                        <Grid item>
+                            <Typography variant='h6' align='center'>
+                            Communities can be easily discovered 
+                            </Typography>
+                        </Grid>
+                        <Grid>
+                        <Button
+                            component={Link}
+                            to="/communities"
+                            className={classes.heroButton}
+                            variant="contained"
+                            size='medium'
+                            onClick={() => props.setValue(1)}
+                            
+                            >
+                            Explore communities
+                        </Button>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Grid>  
             </div>
             <Grid container direction='column' style={{marginTop: '2.5em' ,backgroundColor: '#f9f9f9'}}>
-                <Grid item style={{marginBottom: '2.5em'}}>
+                <Grid item style={{marginBottom: '3em'}}>
                     <Typography variant='h4' style={{textAlign: 'center'}}>Best Communities of UNITE</Typography>
                 </Grid>
                 <Grid item container direction='row' justify='space-around' >

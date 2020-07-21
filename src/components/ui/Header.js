@@ -14,7 +14,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 
-import Unite from '../../assets/unite.png'
+import Unite from '../../assets/unnamed.png'
 
 import Auth from '../../hoc/Auth'
 import * as actions from '../../actions/user'
@@ -33,6 +33,9 @@ function ElevationScroll(props) {
   }
 
 const useStyles = makeStyles(theme => ({
+    appbar : {
+        backgroundColor: theme.palette.secondary.light
+    },
 
     toolbarMargin: {
         ...theme.mixins.toolbar,
@@ -52,7 +55,7 @@ const useStyles = makeStyles(theme => ({
         width: '11em'
     },
     tabContainer: {
-        marginLeft: 'auto'
+        marginLeft: 'auto',
     },
     tab: {
         color: '#fff',
@@ -95,11 +98,15 @@ const Header = (props) => {
             props.setValue(2)
         }
 
+        
+        
+      }, [props.value, pages, props]);
+
+    useEffect(() => {
         window.addEventListener('scroll', () => {
             window.scrollY > 0 ? setToggleHeader(true) : setToggleHeader(false)
         });
-        
-      }, [props.value, pages, props]);
+    })
     
     const handleChange = (newValue) => {
         props.setValue(newValue);
@@ -135,6 +142,7 @@ const Header = (props) => {
                         label={page.name}
                         disableRipple
                         
+                        
                     />
                 ))}
                 {
@@ -163,13 +171,14 @@ const Header = (props) => {
     return (
         <React.Fragment>
             <ElevationScroll>
-                <AppBar position={toggleHeader ? 'fixed' : 'absolute'} className={classes.appbar} style={{backgroundColor: toggleHeader ? null : "transparent"}}>
+                <AppBar position={toggleHeader ? 'fixed' : 'absolute'} className={classes.appbar} style={{backgroundColor: toggleHeader ? null : "transparent", zIndex: '15'}}>
                     <Toolbar>
                         <Button
                             component={Link}
                             to='/'
                             disableRipple
                             className={classes.logoContainer}
+                            
                         >
                             <img alt='site logo' className={classes.logo} src={Unite} />
                         </Button>

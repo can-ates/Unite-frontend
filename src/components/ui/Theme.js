@@ -35,22 +35,22 @@ export default createMuiTheme({
         },
         h1: {
           fontFamily: "Raleway",
-          fontWeight: 700,
+          fontWeight: 900,
           fontSize: "4.2rem",
-          color: 'white',
+          color: arcOrange,
           lineHeight: 1.5
         },
         h2: {
           fontFamily: "Raleway",
           fontWeight: 700,
-          fontSize: "2.5rem",
-          color: 'white',
-          lineHeight: 1.5
+          fontSize: "3rem",
+          color: arcOrange,
+          lineHeight: 1
         },
         h3: {
-          fontFamily: "Pacifico",
+          fontFamily: "Raleway",
           fontSize: "2.5rem",
-          color: arcBlue
+          color: arcOrange
         },
         h4: {
           fontFamily: "Raleway",
@@ -58,10 +58,15 @@ export default createMuiTheme({
           color: arcBlue,
           fontWeight: 700
         },
+        h5: {
+          fontWeight: 600,
+          fontFamily: "Raleway",
+          color: 'white',
+        },
         h6: {
           fontWeight: 700,
           fontFamily: "Raleway",
-          color: arcBlue
+          color: 'white',
         },
         subtitle1: {
           fontSize: "1.25rem",
@@ -138,6 +143,13 @@ export default createMuiTheme({
             fontFamily: 'Raleway',
             fontSize: '0.5rem',
           }
+        },
+        MuiTab: {
+          root :{
+            '&.Mui-selected' : {
+              color: arcOrange
+            }
+          },
         }
       }
 })

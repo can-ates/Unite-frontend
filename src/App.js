@@ -3,8 +3,10 @@ import { Route, Switch } from "react-router-dom";
 
 import Header from './components/ui/Header'
 import Home from './components/Home'
-import Community from './components/Community'
+import Communities from './components/Communities'
 import JoinUs from './components/JoinUs'
+import Community from './components/Community'
+import CreateCommunity from './components/CreateCommunity'
 
 
 
@@ -37,12 +39,35 @@ function App() {
             exact
             path="/communities"
             render={props => (
+              <Communities
+                {...props}
+                setValue={setValue}                  
+            />
+          )}
+        />
+
+        <Route
+            exact
+            path="/create-community"
+            render={props => (
+              <CreateCommunity
+                {...props}
+                setValue={setValue}                  
+            />
+          )}
+        />
+
+        <Route
+            exact
+            path="/community/:id"
+            render={props => (
               <Community
                 {...props}
                 setValue={setValue}                  
             />
           )}
         />
+
           <Route
             exact
             path="/joinus"

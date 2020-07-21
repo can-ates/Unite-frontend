@@ -1,5 +1,6 @@
 import React from 'react'
-
+import {withRouter} from 'react-router-dom'
+import axios from 'axios'
 
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
@@ -36,15 +37,21 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
+
+
 const CardCommunity = (props) => {
     const classes = useStyles()
     const theme = useTheme()
+
+    const handleVisit = () => {
+        props.history.push(`/community/${props.id}`)
+    }
 
     
     return (
         <Card className={classes.root}>
             <CardContent className={classes.content}>
-                <Typography variant='h6' style={{marginBottom: '1em'}}>
+                <Typography variant='h6' style={{marginBottom: '1em', color: theme.palette.common.blue}}>
                     {props.title}
                 </Typography>
                 <Typography variant='subtitle1'>
@@ -52,10 +59,10 @@ const CardCommunity = (props) => {
                 </Typography>
             </CardContent>
             <CardActions>
-                <Button size="small" variant='contained' className={classes.visit}>Visit Community!</Button>
+                <Button onClick={handleVisit} size="small" variant='contained' className={classes.visit}>Visit Community!</Button>
             </CardActions>
         </Card>
     )
 }
 
-export default CardCommunity
+export default withRouter(CardCommunity)
