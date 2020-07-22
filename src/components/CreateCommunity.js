@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import axios from 'axios';
+import {useDropzone} from 'react-dropzone'
 
 import { makeStyles,useTheme } from "@material-ui/core/styles";
 import Grid from '@material-ui/core/Grid'
@@ -11,6 +12,7 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from "@material-ui/core/Button";
 
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import Auth from '../hoc/Auth'
 import sunTornado from '../assets/Sun-Tornado.svg'
@@ -52,10 +54,24 @@ const useStyles = makeStyles(theme => ({
         height: '7em',
         backgroundColor: theme.palette.secondary.dark,
         borderRadius: '10px',
+        marginBottom: '2em'
+    },
+    input: {
+        display: 'none'
+    },
+    coverButton : {
+        color: 'white',
+        borderRadius: '10px',
+        border: '1px solid white',
     }
 }))
 
 const CreateCommunity = (props) => {
+    const [title, setTitle] = useState('')
+    const [description, setDescription] = useState('')
+    const [file, setFile] = useState(null)
+    const [loading, setLoading] = useState(false)
+
     const classes = useStyles()
     const theme = useTheme()
 
@@ -63,6 +79,42 @@ const CreateCommunity = (props) => {
         props.setValue(1)
     })
 
+    
+
+    const onDrop = useCallback(acceptedFile => {
+        let formData = new FormData();
+        const config = {
+            header: {'content-type': 'multipart/form-data'}
+        }
+        formData.append('file', acceptedFile[0])
+        setLoading(true)
+        axios.post('/api/community/uploadimage', formData, config)
+        .then(res => {
+            console.log(res.data)
+            setFile(res.data)
+            setLoading(false)
+        })
+
+      }, [])
+    
+    const {getRootProps, getInputProps, isDragActive} = useDropzone({
+        onDrop,
+        multiple: false,
+    })
+
+    const handleSubmit = () => {
+        const dataToSubmit = {
+            title,
+            description,
+            image: file.url
+        }
+
+        axios.post('/api/community/add-community', dataToSubmit)
+        .then(res => {
+            console.log(res.data)
+        })
+    }
+    
 
     return (
         <div className={classes.container}>
@@ -73,7 +125,7 @@ const CreateCommunity = (props) => {
                         align='center'
                         style={{letterSpacing: 1.5}}
                     >
-                        New Community
+                        Create a Community
                     </Typography>
                 </Grid>
                 <Grid item>
@@ -81,18 +133,29 @@ const CreateCommunity = (props) => {
                     <CardContent>
                         <Grid item container direction='column' >
                             <Grid item>
-                                <Card className={classes.coverPhoto}>
-                                    <CardActions style={{height: '100%'}}>
-                                        
-                                        
-                                        <Button />
-                                        
-                                       
+                                <Card className={classes.coverPhoto} style={{backgroundImage: file ? `url(${file.url})` : null, backgroundSize: 'cover', backgroundPosition: 'center'}}>
+                                    <CardActions style={{height: '100%'}}>      
+                                        <section {...getRootProps()} style={{margin: 'auto'}}>
+                                            <input {...getInputProps()} />
+                                            {
+                                                isDragActive ?
+                                                <p>Drop the image here...</p> :
+                                                (loading ? <CircularProgress /> : (<Button  
+                                                    variant="outlined" 
+                                                    className={classes.coverButton}   
+                                                    component="span">
+                                                Add Cover Photo
+                                                </Button>))
+
+                                            }
+                                        </section>                                
                                     </CardActions>
                                 </Card>
                             </Grid>
                             <Grid item>
                                 <TextField
+                                    value={title}
+                                    onChange={(e) => setTitle(e.target.value)}
                                     label="What will be your community's title"
                                     fullWidth
                                     type='text'
@@ -105,7 +168,9 @@ const CreateCommunity = (props) => {
                             </Grid>
                             <Grid item>
                                 <TextField
-                                    label="Describe it"
+                                    value={description}
+                                    onChange={(e) => setDescription(e.target.value)}
+                                    label="Describe it in 200 characters or less"
                                     fullWidth
                                     type='text'
                                     id="description"
@@ -117,8 +182,11 @@ const CreateCommunity = (props) => {
                             <Grid item>
                                 <CardActions>
                                     <Button
+                                        onClick={handleSubmit}
+                                        disabled={(file && title && description) ? false : true}
                                     >
-                                    Login</Button>
+                                    Create Community
+                                    </Button>
                                 </CardActions>
                             </Grid>
                         </Grid>
@@ -130,4 +198,4 @@ const CreateCommunity = (props) => {
     )
 }
 
-export default Auth(CreateCommunity,)
+export default Auth(CreateCommunity, true)
