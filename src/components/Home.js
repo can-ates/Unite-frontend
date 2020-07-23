@@ -165,12 +165,15 @@ const Home = (props) => {
                 </Grid>
                 <Grid item container direction='row' justify='space-around' >
                 {communities ? communities.map((community, i) => (
-                    <Grid item key={community.title} >
+                    <Grid item align='center' lg={4} key={community.title} >
                         <CardCommunity
                             members={community.members.length}
                             title={community.title}
+                            description={community.description}
                             founder={community.founder}
                             id={community._id}
+                            image={community.image}
+                            buttonText='Join Community!'
                         />
                     </Grid>   
                 )) : null}

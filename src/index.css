@@ -11,9 +11,23 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+html::-webkit-scrollbar {
+  width: 0.50em;
+}
+
+html:-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+}
+
+html::-webkit-scrollbar-thumb {
+background-color: rgb(255, 186, 96);
+outline: 1px solid slategrey;
 }

@@ -25,7 +25,6 @@ const useStyles = makeStyles(theme => ({
         position: 'absolute',
         top: '0',
         zIndex: -1,
-        boxShadow: '0px 12px 42px -13px rgba(3,1,0,1)'
     },
     sad: {
         marginTop: '6em',
@@ -43,18 +42,54 @@ const useStyles = makeStyles(theme => ({
     heroButton: {
         color: 'white',
         textAlign: 'center',
-        zIndex: '-1',
+        zIndex: '0',
+        borderRadius: '15px',
         backgroundColor: theme.palette.primary.main,
         '&:hover': {
             backgroundColor: theme.palette.primary.light
         },
     },
+    showButton: {
+        color: 'white',
+        minWidth: '30em',
+        padding: '0.7em 0',
+        borderRadius: '15px',
+        backgroundColor: theme.palette.primary.main,
+        '&:hover': {
+            backgroundColor: theme.palette.primary.light
+        },
+    },
+    communityContainer : {
+        backgroundColor: '#FAFAFA',
+    }
 }))
     
 
 const Communities = (props) => {
     const classes = useStyles()
     const theme = useTheme()
+
+
+    const [communities, setCommunities] = useState([])
+    const [skip, setSkip] = useState(0)
+    
+
+    useEffect(() => {
+        axios.get('/api/allCommunities?limit=9&skip=0&sortBy=members&order=desc').then((res) => {
+            setCommunities(res.data.community)
+            console.log(res.data.community)
+        })
+    }, [])
+
+    const showCards = (a) => {
+        let sk = skip + a 
+
+        axios.get(`/api/allCommunities?limit=9&skip=${sk}&sortBy=members&order=desc`).then((res) => {
+            setCommunities(res.data.community)
+            setSkip(sk)
+        })
+    }
+
 
 
     return (
@@ -76,7 +111,7 @@ const Communities = (props) => {
                                 to="/create-community"
                                 className={classes.heroButton}
                                 variant="contained"
-                                size='medium'
+                                size='large'
                                 onClick={() => props.setValue(3)}
                                 
                                 >
@@ -86,6 +121,37 @@ const Communities = (props) => {
                     </Grid>
                 </Grid>
             </div>
+            <Grid container direction='column' className={classes.communityContainer}>
+                    <Grid item>
+                        <Typography variant='h4' style={{textAlign: 'center', margin: '2.5em 0'}}>Communities of UNITE</Typography>
+                    </Grid>
+                    <Grid item container direction='row' justify='space-between' >
+                    {communities ? communities.map((community, i) => (
+                        <Grid align='center' lg={4} item key={community.title} style={{marginBottom: '4em'}} >
+                            <CardCommunity
+                                members={community.members.length}
+                                title={community.title}
+                                description={community.description}
+                                founder={community.founder}
+                                id={community._id}
+                                image={community.image}
+                                buttonText='Join Community!'
+                            />
+                        </Grid>   
+                    )) : null}
+                    </Grid>
+                        <Grid item container direction='row' justify='space-between'>
+                            <Grid item align='center' lg={4}>
+                                <Button disabled={skip === 0 ? true  : false} onClick={() => showCards(-9)} variant='outlined' className={classes.showButton}>Show Less</Button>
+                            </Grid>
+                            <Grid item align='center' lg={4}>
+                                
+                            </Grid>
+                            <Grid item align='center' lg={4}>
+                                <Button disabled={communities.length < 6 ? true : false} onClick={() => showCards(9)} variant='outlined' className={classes.showButton}>Show More</Button>
+                            </Grid>            
+                        </Grid>
+                    </Grid>
         </div>
     )
 }

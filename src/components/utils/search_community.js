@@ -3,9 +3,6 @@ import { Link } from "react-router-dom";
 import axios from 'axios';
 
 import { makeStyles,useTheme } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
 import InputBase from '@material-ui/core/InputBase';
 import Paper from '@material-ui/core/Paper';
 
@@ -43,7 +40,8 @@ const useStyles = makeStyles(theme => ({
         backgroundColor: 'white',
         marginTop: '0.2em',
         borderRadius: '10px',
-        minWidth: '35em'
+        minWidth: '35em',
+        zIndex: '10'
     },
 }))   
 
