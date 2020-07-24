@@ -7,9 +7,7 @@ import Communities from './components/Communities'
 import JoinUs from './components/JoinUs'
 import Community from './components/Community'
 import CreateCommunity from './components/CreateCommunity'
-
-
-
+import Post from './components/Post'
 
 
 
@@ -35,6 +33,17 @@ function App() {
             )}
           />
         
+          <Route
+            exact
+            path="/community/:id/post/:postId"
+            render={props => (
+              <Post
+                {...props}
+                setValue={setValue}                
+            />
+            )}
+          />
+
           <Route
             exact
             path="/communities"

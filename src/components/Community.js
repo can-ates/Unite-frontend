@@ -1,26 +1,28 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from 'axios';
+import moment from 'moment'
 
 import Grid from "@material-ui/core/Grid";
 import Card from '@material-ui/core/Card';
+import Avatar from '@material-ui/core/Avatar';
+import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import InputBase from '@material-ui/core/InputBase';
 import Paper from '@material-ui/core/Paper';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import Divider from '@material-ui/core/Divider';
 import Button from '@material-ui/core/Button';
+import Typography from "@material-ui/core/Typography";
 
 import IconButton from '@material-ui/core/IconButton';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import CommentIcon from '@material-ui/icons/Comment';
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 
 import CardCommunity from './utils/card_community'
 import Auth from '../hoc/Auth'
 
 import bermuda from '../assets/Bermuda-Circle.svg'
+import ShowMembers from "./utils/show_members";
 
 const useStyles = makeStyles(theme => ({
     back : { 
@@ -49,7 +51,25 @@ const useStyles = makeStyles(theme => ({
         marginTop : '0.75em',
     },
     posts: {
-        padding: '0 0 0 2em'
+        padding: '0 0 0 2em',
+        "&::-webkit-scrollbar" :{
+            width: '0px',
+            background: 'transparent',
+        },
+        height: '100vh',
+        "overflow-y": 'scroll',
+        paddingBottom: '6em',
+        "&::-webkit-scrollbar" : {
+            width: '0.35em'
+        },
+        "&::-webkit-scrollbar-track" : {
+            width: '0.35em'
+        },
+        "&::-webkit-scrollbar-thumb" : {
+            backgroundColor: "rgb(255, 186, 96)",
+            outline: '1px solid slategrey'
+        },
+        
     },
     postTitle: {
         display: 'flex',
@@ -74,7 +94,21 @@ const useStyles = makeStyles(theme => ({
         },
         overflow: 'auto',
         height: '100vh', 
-        paddingBottom: '2em'
+        paddingBottom: '6em'
+    },
+    postCard : {
+        '&:hover' : {
+            cursor: 'pointer',
+            backgroundColor :'#FAFAFA'
+        },
+        borderRadius: '0',
+        borderTop: '1px solid #FAFAFA',  
+    },
+    description:{
+        display: "-webkit-box",
+        "-webkit-line-clamp": '3',
+        "-webkit-box-orient": "vertical",
+        "overflow": "hidden",
     }
 }))
 
@@ -83,6 +117,9 @@ const Community = (props) => {
     const theme = useTheme()
 
     const [community, setCommunity] = useState(null)
+    const [posts, setPosts] = useState(null)
+    const [title, setTitle] = useState('')
+    const [description, setDescription] = useState('')
     const [hideDescription, setHideDescription] = useState(true)
 
     useEffect(() => {
@@ -91,7 +128,8 @@ const Community = (props) => {
         axios.get(`/api/community/${props.match.params.id}`)
         .then(res => {
             setCommunity(res.data.community)
-            console.log(res.data.community.members)
+            setPosts(res.data.community.posts)
+            console.log(res.data.community.posts)
         })
     }, [])
 
@@ -102,6 +140,64 @@ const Community = (props) => {
         })
     }
 
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        const dataToSubmit = {
+            title: title,
+            description: description
+        }
+
+        axios.post(`/api/post/${props.match.params.id}/create-post`, dataToSubmit)
+        .then(res => {
+            console.log(res.data)
+        })
+    }
+
+    const showPosts = () => (
+        posts ? (
+            posts.map((post, i) => (
+                
+                <Card key={`${post._id}-${i}`} className={classes.postCard} onClick={() => goToComments(post._id)}>
+                    <Grid container direction='row' >
+                        <Grid lg={1} item style={{paddingTop: '0.7em', paddingLeft: '1em'}}>
+                            <Avatar aria-label="user avatar"  style={{backgroundColor: '#'+(0x1000000+(Math.random())*0xffffff).toString(16).substr(1,6)}}>
+                                {post.author.name.charAt(0)}
+                            </Avatar>
+                        </Grid>
+                        <Grid lg={11} item>
+                                
+                            <CardHeader
+                                title={<Typography variant='caption' display='inline'>{`${post.author.name} ${post.author.lastname} · `}</Typography>}
+                                subheader={<Typography style={{fontSize: '0.850rem', fontWeight: 900, color: '#6771A4'}} display='inline' >{moment(post.createdAt).fromNow()}</Typography>}
+                                disableTypography
+                            />
+                    
+                    
+                            <CardContent style={{paddingTop: '0', paddingBottom: '0'}}>
+                                <Typography variant='subtitle1' >{post.title}</Typography>
+                                <Typography className={classes.description} variant='subtitle2' >{post.description}</Typography>
+                            </CardContent>
+                    
+                    
+                            <CardContent style={{paddingBottom: '0'}}>
+                                <CommentIcon fontSize='small' style={{marginRight: '4px'}} />
+                                <span style={{marginBottom: '1em'}}>{post.comments.length}</span>
+                            </CardContent> 
+
+                        </Grid>
+                    </Grid>
+                </Card>
+            )))
+            : null
+    )
+
+    
+
+    const goToComments = (a) => {
+        props.history.push(`/community/${props.match.params.id}/post/${a}`)
+    }
+
+    
 
     return (
     <div className={classes.back}>
@@ -123,43 +219,29 @@ const Community = (props) => {
                         /> : null }
                     </Grid>
                     <Grid item style={{marginTop: '2.5em', width: '90%'}}>
-                        <Card>
-                            <CardContent>
-                                <List>
-                                        <ListItem>
-                                            <ListItemText disableTypography primary='Members' style={{...theme.typography.h6}}/>
-                                        </ListItem>
-                                {
-                                    community ? community.members.map((member, i) => (
-                                    <React.Fragment key={`${member}-${i}`}>
-                                        <ListItem>
-                                            <ListItemText disableTypography primary={member.name} style={{...theme.typography.subtitle1}} />
-                                            <ListItemText disableTypography primary={member.lastname} style={{...theme.typography.subtitle1}} />
-                                        </ListItem>
-                                        <Divider light={true} />
-                                    </React.Fragment>                             
-                                    ))
-                                    : null 
-                                }
-                                </List>
-                            </CardContent>
-                        </Card>   
+                        {
+                           <ShowMembers 
+                            community={community}
+                           />
+                        }
                     </Grid>         
                 </Grid>
             </Grid>
             <Grid item lg={8} className={classes.posts} >
                 <Grid item container direction='column'>
                     <Grid item>
-                        <Card>
+                        <Card style={{borderRadius: '0'}}>
                             <CardContent>
                                 <Paper className={classes.postTitle}>
                                     <IconButton aria-label="user">
                                         <AccountCircleIcon color='secondary' fontSize='large'/>
                                     </IconButton>
-                                    <InputBase 
+                                    <InputBase
+                                        value={title} 
                                         placeholder="What's on your mind ?"
                                         type='text'
                                         fullWidth
+                                        onChange={(e) => setTitle(e.target.value)}
                                         onClick={() => setHideDescription(false)}
                                         
                                     />
@@ -180,11 +262,13 @@ const Community = (props) => {
                                     <React.Fragment>
                                         <Paper className={classes.postDescription}>
                                             <InputBase
+                                                value={description}
                                                 style={{paddingLeft: '1em'}}
                                                 multiline={true}
                                                 rows={3}
                                                 placeholder="Add details"
                                                 type='text'
+                                                onChange={(e) => setDescription(e.target.value)}
                                                 fullWidth        
                                             />
                                         </Paper>
@@ -197,6 +281,7 @@ const Community = (props) => {
                                                 variant='outlined' 
                                                 aria-label="post"
                                                 className={classes.postButton}
+                                                onClick={handleSubmit}
                                                 >
                                                 Post
                                             </Button>
@@ -205,7 +290,12 @@ const Community = (props) => {
                                 }
                                 
                             </CardContent>
-                        </Card>
+                        </Card>  
+                    </Grid>
+                    <Grid item className={classes.postCards}>
+                    {   
+                        showPosts()
+                    }
                         
                     </Grid>
                 </Grid>

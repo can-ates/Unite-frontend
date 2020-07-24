@@ -71,13 +71,13 @@ export default createMuiTheme({
         subtitle1: {
           fontSize: "1.05rem",
           fontWeight: 900,
-          color: arcGrey
+          color: 'black'
         },
         subtitle2: {
           fontFamily: "Raleway",
           color: "black",
           fontWeight: 500,
-          fontSize: "1rem"
+          fontSize: "0.90rem"
         },
         body1: {
           fontFamily: "Raleway",
@@ -92,9 +92,10 @@ export default createMuiTheme({
           fontWeight: 700
         },
         caption: {
+          fontFamily: "Raleway",
           fontSize: "1rem",
-          fontWeight: 300,
-          color: arcGrey
+          fontWeight: 900,
+          color: 'black'
         },
       },
       overrides: {
@@ -150,6 +151,6 @@ export default createMuiTheme({
               color: arcOrange
             }
           },
-        }
+        },
       }
 })
