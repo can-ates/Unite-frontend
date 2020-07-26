@@ -22,22 +22,18 @@ import CardCommunity from './utils/card_community'
 import ShowMembers from './utils/show_members'
 import Auth from '../hoc/Auth'
 
-import bermuda from '../assets/Bermuda-Circle.svg'
-
-import CommentIcon from '@material-ui/icons/Comment';
 
 const useStyles = makeStyles(theme => ({
     back : { 
-            backgroundImage: `url(${bermuda})`,
-            backgroundPosition: 'center',
-            backgroundSize: "cover",
-            backgroundRepeat: "no-repeat",
+            backgroundColor: "#FAFAFA",
             width: '100%',
             position: 'absolute',
             top: '0',
             zIndex: -1,
             boxShadow: '0px 12px 42px -13px rgba(3,1,0,1)',
-            overflow: 'auto'
+            overflow: 'hidden',
+            height: '100%'
+            
     },
     postContainer: {
         padding: '0 2em',
@@ -48,16 +44,13 @@ const useStyles = makeStyles(theme => ({
         [theme.breakpoints.down("xs")]: {
           marginBottom: "1.5em"
         },
+        
     },
     posts: {
         padding: '0 0 0 2em',
-        "&::-webkit-scrollbar" :{
-            width: '0px',
-            background: 'transparent',
-        },
         height: '100vh',
         "overflow-y": 'scroll',
-        paddingBottom: '6em',
+        
         "&::-webkit-scrollbar" : {
             width: '0.35em'
         },
@@ -86,8 +79,8 @@ const useStyles = makeStyles(theme => ({
     comment : {
         display: 'flex',
         alignItems: 'center',
-        position: 'fixed',
-        bottom: '0',  
+        
+         
     },
     commentInput : {
         border: '1px solid #FAFAFA',
@@ -96,7 +89,7 @@ const useStyles = makeStyles(theme => ({
         },
         borderRadius: '15px', 
         paddingLeft: '1em',
-        
+        fontWeight: 500
     },
     commentButton : {
         margin: '0 1em',
@@ -113,10 +106,22 @@ const useStyles = makeStyles(theme => ({
 const Post = (props) => {
     const classes = useStyles()
     const theme = useTheme()
-    let size = null
+
+    const [member, setMember] = useState(null)
     const [community, setCommunity] = useState(null)
     const [post, setPost] = useState(null)
+    const [comments, setComments] = useState([])
+    const [comment, setComment] = useState('')
 
+
+
+    useEffect(() => {
+        axios.get(`/api/community/auth/${props.match.params.id}`)
+        .then(res => {
+            console.log(res.data)
+            setMember(res.data)
+        })
+    }, [])
 
     //For community
     useEffect(() => {
@@ -126,16 +131,18 @@ const Post = (props) => {
         .then(res => {
             setCommunity(res.data.community)
             
-            console.log(res.data.community.posts)
         })
     }, [])
+
+    
 
     //For Post
     useEffect(() => {
         
         axios.get(`/api/post/${props.match.params.postId}`)
         .then(res => {
-            console.log(res.data.post)
+            console.log(res.data)
+            setComments(res.data.post.comments)
             setPost(res.data.post)
         })
     }, [])
@@ -146,6 +153,53 @@ const Post = (props) => {
             console.log(res.data)
         })
     }
+
+    const handleComment = () => {
+        let dataToSubmit = {
+            text: comment
+        }
+
+        axios.post(`/api/${props.match.params.id}/post/${props.match.params.postId}/add-comment`, dataToSubmit)
+        .then(res => {
+            console.log(res.data)
+        })
+    }
+
+    const showComments = () => (
+        comments ? (
+            comments.map((comment, i) => (
+                
+                <Card key={`${comment._id}-${i}`} className={classes.commentCard}>
+                    <Grid container direction='row' >
+                        <Grid lg={1} item style={{paddingTop: '0.7em', paddingLeft: '1em'}}>
+                            <Avatar aria-label="user avatar"  style={{backgroundColor: 'grey'}}>
+                                {comment.name.charAt(0)}
+                            </Avatar>
+                        </Grid>
+                        <Grid lg={11} item>
+                                
+                            <CardHeader
+                                title={<Typography variant='caption' display='inline'>{`${comment.user.name} ${comment.user.lastname} · `}</Typography>}
+                                subheader={<Typography style={{fontSize: '0.850rem', fontWeight: 900, color: '#6771A4'}} display='inline' >{moment(comment.createdAt).fromNow()}</Typography>}
+                                disableTypography
+                            />
+                    
+                    
+                            <CardContent style={{paddingTop: '0', paddingBottom: '0'}}>
+                                <Typography className={classes.description} variant='subtitle2' >{comment.text}</Typography>
+                            </CardContent>
+                    
+                    
+                            <CardContent style={{paddingBottom: '0'}}>
+                                
+                            </CardContent> 
+
+                        </Grid>
+                    </Grid>
+                </Card>
+            )))
+            : null
+    )
 
     return (
         <div className={classes.back}>
@@ -164,6 +218,7 @@ const Post = (props) => {
                             beMember={handleMember}
                             width='90%'
                             height={150}
+                            isMember={member ? member.isMember : null}
                         /> : null }
                     </Grid>
                     <Grid item style={{marginTop: '2.5em', width: '90%'}}>
@@ -177,11 +232,7 @@ const Post = (props) => {
             </Grid>
             <Grid item lg={8} className={classes.posts} >
                 <Grid item container direction='column'  >
-                    <Grid item ref={el => {
-                        if(!el) return;
-                        size = el.getBoundingClientRect().width
-                        console.log(size)
-                    }}>
+                    <Grid item >
                         {post ? <Card className={classes.postCard} >
                             <Grid container direction='column' >
                                 <Grid item style={{paddingTop: '0.7em', paddingLeft: '1em'}}>
@@ -209,29 +260,38 @@ const Post = (props) => {
                             </Grid>
                         </Card> : null}
                     </Grid>
-                    <Grid item >
-                        <Grid container direction='row'  >
-                            <Paper className={classes.comment} style={{minWidth: `${size}` }}>
+                    
+                    <Grid item style={{paddingBottom: '6em'}}>
+                       {
+                           showComments()
+                       }
+                    </Grid>
+                    <Grid item style={{position: 'sticky', bottom: '6em'}}>
+                        
+                            { member ? member.isMember && <Paper className={classes.comment}>
                                 <IconButton aria-label="user">
                                     <AccountCircleIcon color='secondary' fontSize='large'/>
                                 </IconButton>
                                 <InputBase
+                                    value={comment}
                                     placeholder="Your comment here"
                                     type='text'
                                     fullWidth
+                                    onChange={(e) => setComment(e.target.value)}
                                     className={classes.commentInput}
                                 />
                                                 
                                 <Button 
                                     type="submit"
                                     variant='outlined' 
-                                    aria-label="post"
+                                    aria-label="comment"
                                     className={classes.commentButton}
+                                    onClick={handleComment}
                                 >
                                 Send
                                 </Button>
-                            </Paper>   
-                        </Grid>
+                            </Paper> : null  } 
+
                         
                     </Grid>
                 </Grid>

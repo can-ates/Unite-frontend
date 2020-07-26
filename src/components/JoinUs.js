@@ -30,9 +30,7 @@ function Alert(props) {
 
 const useStyles = makeStyles(theme => ({
     hero: {
-        backgroundImage: `url(${gradient})`,
-        backgroundPosition: 'center',
-        backgroundSize: "cover",
+        backgroundColor: "#FAFAFA",
         height: '100vh',
         width: '100%',
         position: 'absolute',
@@ -52,21 +50,15 @@ const useStyles = makeStyles(theme => ({
     },
     root: {
         marginTop: '2em',
-        background: 'transparent',
         minWidth: '25em',
-        boxShadow: '0px 0px 5px 2px rgba(255,255,255,0.75);',
-        '&:hover' : {
-            boxShadow: '0px 0px 5px 5px rgb(255, 186, 96, 0.75)'
-        }
+        backgroundColor: '#0C7C8A',
+        boxShadow: '0px 0px 3px 2px rgba(0,0,0,0.75)'
     },
     root1: {    
         marginTop: '2em',
         minWidth: '25em',
-        background: 'transparent',
-        boxShadow: '0px 0px 5px 2px rgba(255,255,255,0.75);',
-        '&:hover' : {
-            boxShadow: '0px 0px 5px 5px rgb(255, 186, 96, 0.75)'
-        }
+        backgroundColor: '#0C7C8A',
+        boxShadow: '0px 0px 3px 2px rgba(0,0,0,0.75)'
     },
     Fields: {
         padding: '0 3.5em 2em 3.5em'
@@ -168,7 +160,7 @@ const JoinUs = (props) => {
                                                 align='center'
                                                 style={{marginTop: '1.5em'}}
                                             >
-                                                xd
+                                                Create an account
                                             </Typography>
                                         </Grid>
                                         <Grid item>

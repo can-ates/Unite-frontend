@@ -10,7 +10,7 @@ import Divider from '@material-ui/core/Divider';
 
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 
-const ShowMembers = (props) => {
+const ShowMembers = React.memo(props => {
     const theme = useTheme()
 
     return (
@@ -27,8 +27,8 @@ const ShowMembers = (props) => {
                     props.community.members.map((member, i) => (
                     <React.Fragment key={`${member}-${i}`}>
                         <ListItem>
-                            <ListItemText disableTypography primary={member.name} style={{...theme.typography.subtitle1}} />
-                            <ListItemText disableTypography primary={member.lastname} style={{...theme.typography.subtitle1}} />
+                            <ListItemText disableTypography primary={member.name} style={{...theme.typography.body1, color: 'black'}} />
+                            <ListItemText disableTypography primary={member.lastname} style={{...theme.typography.body1, color: 'black', textAlign: 'end'}} />
                         </ListItem>
                         <Divider light={true} />
                     </React.Fragment>                             
@@ -42,6 +42,6 @@ const ShowMembers = (props) => {
             </CardContent>
         </Card>   
     )
-}
+})
 
 export default ShowMembers

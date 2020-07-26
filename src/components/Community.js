@@ -21,21 +21,20 @@ import { makeStyles, useTheme } from "@material-ui/core/styles";
 import CardCommunity from './utils/card_community'
 import Auth from '../hoc/Auth'
 
-import bermuda from '../assets/Bermuda-Circle.svg'
+
 import ShowMembers from "./utils/show_members";
 
 const useStyles = makeStyles(theme => ({
     back : { 
-            backgroundImage: `url(${bermuda})`,
-            backgroundPosition: 'center',
-            backgroundSize: "cover",
-            backgroundRepeat: "no-repeat",
+            backgroundColor: "#FAFAFA",
             width: '100%',
             position: 'absolute',
             top: '0',
-            zIndex: -1,
+            zIndex: -100,
             boxShadow: '0px 12px 42px -13px rgba(3,1,0,1)',
-            overflow: 'auto'
+            overflow: 'hidden',
+            height: '100%'
+            
     },
     communityContainer: {
         padding: '0 2em',
@@ -112,15 +111,17 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-const Community = (props) => {
+const Community = React.memo(props => {
     const classes = useStyles()
     const theme = useTheme()
 
+    const [member, setMember] = useState([])
     const [community, setCommunity] = useState(null)
     const [posts, setPosts] = useState(null)
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
     const [hideDescription, setHideDescription] = useState(true)
+    const [refresh, setRefresh] = useState(null)
 
     useEffect(() => {
         props.setValue(1)
@@ -129,15 +130,20 @@ const Community = (props) => {
         .then(res => {
             setCommunity(res.data.community)
             setPosts(res.data.community.posts)
-            console.log(res.data.community.posts)
+        })
+    }, [refresh])
+
+    useEffect(() => {
+        axios.get(`/api/community/auth/${props.match.params.id}`)
+        .then(res => {
+            console.log(res.data)
+            setMember(res.data)
         })
     }, [])
 
     const handleMember = () => {
         axios.post(`/api/community/${props.match.params.id}/beMember`)
-        .then(res => {
-            console.log(res.data)
-        })
+        
     }
 
     const handleSubmit = (e) => {
@@ -149,7 +155,10 @@ const Community = (props) => {
 
         axios.post(`/api/post/${props.match.params.id}/create-post`, dataToSubmit)
         .then(res => {
-            console.log(res.data)
+            setRefresh(res.data)
+            setHideDescription(true)
+            setTitle('')
+            setDescription('')
         })
     }
 
@@ -157,7 +166,7 @@ const Community = (props) => {
         posts ? (
             posts.map((post, i) => (
                 
-                <Card key={`${post._id}-${i}`} className={classes.postCard} onClick={() => goToComments(post._id)}>
+                <Card key={`${post._id}-${i}`} className={classes.postCard} style={{borderLeft: post.comments.length > 0 ? '5px solid #FFBA60' : null}} onClick={() => goToComments(post._id)}>
                     <Grid container direction='row' >
                         <Grid lg={1} item style={{paddingTop: '0.7em', paddingLeft: '1em'}}>
                             <Avatar aria-label="user avatar"  style={{backgroundColor: '#'+(0x1000000+(Math.random())*0xffffff).toString(16).substr(1,6)}}>
@@ -215,7 +224,9 @@ const Community = (props) => {
                             buttonText='Be a member'
                             beMember={handleMember}
                             width='90%'
+                            isAuth={props.user.isAuth ? true : false}
                             height={150}
+                            isMember={member ? member.isMember : null}
                         /> : null }
                     </Grid>
                     <Grid item style={{marginTop: '2.5em', width: '90%'}}>
@@ -232,7 +243,7 @@ const Community = (props) => {
                     <Grid item>
                         <Card style={{borderRadius: '0'}}>
                             <CardContent>
-                                <Paper className={classes.postTitle}>
+                                <Paper className={classes.postTitle} style={{display: member.isMember ? null : 'none'}}>
                                     <IconButton aria-label="user">
                                         <AccountCircleIcon color='secondary' fontSize='large'/>
                                     </IconButton>
@@ -292,7 +303,7 @@ const Community = (props) => {
                             </CardContent>
                         </Card>  
                     </Grid>
-                    <Grid item className={classes.postCards}>
+                    <Grid item >
                     {   
                         showPosts()
                     }
@@ -303,6 +314,6 @@ const Community = (props) => {
         </Grid>
     </div>
     )
-}
+})
 
-export default Auth(Community, true)
+export default Auth(Community, false)

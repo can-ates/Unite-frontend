@@ -27,13 +27,23 @@ const useStyles = makeStyles(theme => ({
         alignItems: 'center',
         boxShadow: '0px 12px 30px -5px rgba(3,1,0,1)',
         position: 'relative',
-        borderRadius: '10px'
+        borderRadius: '10px',
+        [theme.breakpoints.down('xs')]: {
+            minWidth: '8em',
+            height: '40px'
+        }
         
     },
     search: {
-        minWidth: '25em',
         color: theme.palette.common.blue,
-        fontWeight: '700'
+        fontWeight: '700',
+        minWidth: '25em',
+        [theme.breakpoints.down('sm')]: {
+            minWidth: '16em',
+        },
+        [theme.breakpoints.down('xs')]: {
+            minWidth: '12em',
+        }
     },
     resultList: {
         position: 'absolute',
@@ -68,6 +78,7 @@ const SearchCommunity = () => {
             .then((res) => {
                 setSearchResult(res.data.community)
                 setLoading(res.data ? false : true)
+                console.log(res.data.community)
                 
             })
         } else setLoading(false); setSearchResult('')
@@ -91,8 +102,8 @@ const SearchCommunity = () => {
 
             {searchResult ? <List className={classes.resultList}>
             {searchResult.map((result, i) => (
-                <React.Fragment>
-                    <ListItemLink key={`${result}-${i}`}>
+                <React.Fragment key={`${result}-${i}`}>
+                    <ListItemLink  to={`/community/${result._id}`}>
                         <ListItemText disableTypography primary={result.title} style={{...theme.typography.h6}} />
                         <ListItemText disableTypography primary={`${result.members.length} members`} style={{textAlign: 'end', color: theme.palette.common.grey}} />
                     </ListItemLink>

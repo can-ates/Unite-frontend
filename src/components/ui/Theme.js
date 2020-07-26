@@ -131,7 +131,7 @@ export default createMuiTheme({
         },
         MuiFormHelperText: {
           root: {
-            color: '#000',
+            color: 'white',
             '&.Mui-error': {
               color: '#ff7777',
               fontWeight: 600

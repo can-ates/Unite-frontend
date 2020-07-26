@@ -9,7 +9,7 @@ import Typography from "@material-ui/core/Typography";
 
 
 import useMediaQuery from "@material-ui/core/useMediaQuery";
-
+import Hidden from '@material-ui/core/Hidden';
 
 import people from '../assets/people.jpg'
 import ahoy from '../assets/Rainbow-Vortex.svg'
@@ -20,16 +20,27 @@ import CardCommunity from '../components/utils/card_community'
 
 const useStyles = makeStyles(theme => ({
     hero: {
-        backgroundImage: `url(${people})`,
-        backgroundPosition: 'center',
-        backgroundSize: "cover",
-        backgroundRepeat: "no-repeat",
-        height: '85vh',
-        width: '100%',
-        position: 'absolute',
-        top: '0',
-        zIndex: -1,
-        boxShadow: '0px 12px 42px -13px rgba(3,1,0,1)'
+        [theme.breakpoints.down("md")]: {
+            backgroundColor: '#175177',
+            height: '85vh',
+            width: '100%',
+            position: 'absolute',
+            top: '0',
+            zIndex: -1,
+            boxShadow: '0px 12px 42px -13px rgba(3,1,0,1)',
+          },
+        [theme.breakpoints.up("md")]: {
+            backgroundImage: `url(${people})`,
+            backgroundPosition: 'center',
+            backgroundSize: "cover",
+            backgroundRepeat: "no-repeat",
+            height: '85vh',
+            width: '100%',
+            position: 'absolute',
+            top: '0',
+            zIndex: -1,
+            boxShadow: '0px 12px 42px -13px rgba(3,1,0,1)',
+        },
     },
     sad: {
         marginTop: '6em',
@@ -62,6 +73,9 @@ const useStyles = makeStyles(theme => ({
     },
     findCommunity: {
         marginTop: '3em',
+        [theme.breakpoints.down("xs")]: {
+            marginTop: "1.5em"
+          },
         backgroundImage: `url(${ahoy})`,
         backgroundPosition: 'center',
         backgroundSize: "cover",
@@ -77,11 +91,14 @@ const useStyles = makeStyles(theme => ({
 
 
 const Home = (props) => {
-    const [communities, setCommunities] = useState(null)
-    
-
     const classes = useStyles();
     const theme = useTheme();
+    const matchesSM = useMediaQuery(theme.breakpoints.down("sm"));
+    const matchesXS = useMediaQuery(theme.breakpoints.down("xs"));
+    const matchesMD = useMediaQuery(theme.breakpoints.down("md"));
+
+
+    const [communities, setCommunities] = useState(null)
 
     useEffect(() => {
         axios.get('/api/allCommunities?limit=3&sortBy=members&order=desc').then((res) => {
@@ -96,10 +113,10 @@ const Home = (props) => {
         <div className={classes.hero}>
             <div  style={{position: 'relative', height: '100%', display: 'flex'}}>
             <Grid container direction='row'  className={classes.sad}>
-                <Grid item container lg={3}> 
+                <Grid item container md={3}> 
                     <Grid container direction='column' alignItems='center' justify='space-around'>
                         <Grid item>
-                            <Typography variant='h5' align='center'>
+                            <Typography variant='h5' align='center' >
                                 Build a great online community
                             </Typography>
                         </Grid>
@@ -123,14 +140,16 @@ const Home = (props) => {
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid lg={6} item container direction='column' alignItems='center' justify='space-between' >
-                    <Grid item>
-                        <Typography variant='h3' align='center'>
-                            All communities in one place
-                        </Typography>
+                <Hidden smDown>
+                    <Grid md={6} item container direction='column' alignItems='center' justify='space-between' >
+                        <Grid item >
+                            <Typography variant='h3' align='center'>
+                                All communities in one place
+                            </Typography>
+                        </Grid>
                     </Grid>
-                </Grid>
-                <Grid item container lg={3}> 
+                </Hidden>
+                <Grid item container md={3}> 
                     <Grid container direction='column' alignItems='center' justify='space-around'>
                         <Grid item>
                             <Typography variant='h5' align='center'>
@@ -161,11 +180,11 @@ const Home = (props) => {
             </div>
             <Grid container direction='column' style={{marginTop: '2.5em' ,backgroundColor: '#f9f9f9'}}>
                 <Grid item style={{marginBottom: '3em'}}>
-                    <Typography variant='h4' style={{textAlign: 'center'}}>Best Communities of UNITE</Typography>
+                    <Typography variant={matchesXS ? 'h6' : 'h4'} style={{textAlign: 'center',}}>Best Communities of UNITE</Typography>
                 </Grid>
                 <Grid item container direction='row' justify='space-around' >
                 {communities ? communities.map((community, i) => (
-                    <Grid item align='center' lg={4} key={community.title} >
+                    <Grid item align='center' lg={4} style={{marginBottom: matchesSM ? '3em' : null}} key={community.title} >
                         <CardCommunity
                             members={community.members.length}
                             title={community.title}
@@ -174,6 +193,7 @@ const Home = (props) => {
                             id={community._id}
                             image={community.image}
                             buttonText='Join Community!'
+                            isAuth={true}
                         />
                     </Grid>   
                 )) : null}

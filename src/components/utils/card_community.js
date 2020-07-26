@@ -45,7 +45,7 @@ const useStyles = makeStyles(theme => ({
 
 
 
-const CardCommunity = (props) => {
+const CardCommunity = React.memo(props => {
     const classes = useStyles()
     const theme = useTheme()
 
@@ -53,6 +53,9 @@ const CardCommunity = (props) => {
         props.history.push(`/community/${props.id}`)
     }
 
+    const goToLogin = () => {
+        props.history.push('/joinus')
+    }
     
     return (
         <Card className={classes.root} style={{maxWidth: props.width ? props.width : '25em' }}>
@@ -78,10 +81,11 @@ const CardCommunity = (props) => {
                 </div> 
             </CardContent>
             <CardActions>
-                <Button onClick={props.beMember ? props.beMember : handleVisit} fullWidth size="small" variant='contained' className={classes.visit}>{props.buttonText}</Button>
+                {props.isMember ? null : <Button onClick={props.isAuth ? (props.beMember ? props.beMember : handleVisit) : goToLogin} fullWidth size="small" variant='contained' className={classes.visit}>{props.buttonText}</Button>}
+                
             </CardActions>
         </Card>
     )
-}
+})
 
 export default withRouter(CardCommunity)

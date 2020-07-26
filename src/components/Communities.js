@@ -7,7 +7,8 @@ import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 
-
+import Hidden from '@material-ui/core/Hidden';
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 import ahoy1 from '../assets/Sun-Tornado1.svg'
 
 import SearchCommunity from './utils/search_community'
@@ -25,6 +26,9 @@ const useStyles = makeStyles(theme => ({
         position: 'absolute',
         top: '0',
         zIndex: -1,
+        [theme.breakpoints.down("md")]: {
+        
+          },
     },
     sad: {
         marginTop: '6em',
@@ -37,7 +41,7 @@ const useStyles = makeStyles(theme => ({
         }
     },
     createContent: {
-        marginTop: '3em',
+        marginTop: '2em',
     },
     heroButton: {
         color: 'white',
@@ -58,6 +62,9 @@ const useStyles = makeStyles(theme => ({
         '&:hover': {
             backgroundColor: theme.palette.primary.light
         },
+        [theme.breakpoints.down("md")]: {
+            minWidth: "10em"
+          },
     },
     communityContainer : {
         backgroundColor: '#FAFAFA',
@@ -68,6 +75,9 @@ const useStyles = makeStyles(theme => ({
 const Communities = (props) => {
     const classes = useStyles()
     const theme = useTheme()
+    const matchesXS = useMediaQuery(theme.breakpoints.down("xs"));
+    const matchesMD = useMediaQuery(theme.breakpoints.down("md"));
+    
 
 
     const [communities, setCommunities] = useState([])
@@ -77,7 +87,6 @@ const Communities = (props) => {
     useEffect(() => {
         axios.get('/api/allCommunities?limit=9&skip=0&sortBy=members&order=desc').then((res) => {
             setCommunities(res.data.community)
-            console.log(res.data.community)
         })
     }, [])
 
@@ -97,22 +106,26 @@ const Communities = (props) => {
             <div style={{position: 'relative', height: '100%', display: 'flex'}}>
                 <Grid container direction='column' alignItems='center' className={classes.sad}>
                     <Grid item>
-                        <Typography variant='h4' style={{margin: '1em 0', color: 'white'}}>Find Communities</Typography>
+                        <Typography variant='h4' style={{marginBottom: '1em', color: 'white'}}>Find Communities</Typography>
                     </Grid>
                     <Grid item>
                         <SearchCommunity />
                     </Grid>
                     <Grid align='center' item className={classes.createContent}>
-                        <Typography variant='body2'>If you could not find what you're looking for</Typography>
-                        <Typography style={{marginBottom: '1em'}} variant='body1' align='center'>Create your own community</Typography>
+                        <Typography style={{marginBottom: matchesXS ? '5px' : null  }} variant='body2'>If you could not find what you're looking for</Typography>
+                        <Hidden xsDown>
+                            <Typography style={{marginBottom: '1em', fontSize: matchesXS ? '1rem' : null  }} variant='body1' align='center'>Create your own community</Typography>
+                        </Hidden>
+                        
                         
                             <Button
                                 component={Link}
                                 to="/create-community"
                                 className={classes.heroButton}
                                 variant="contained"
-                                size='large'
+                                size={matchesXS ? 'medium' : 'large'}
                                 onClick={() => props.setValue(3)}
+                                
                                 
                                 >
                                 Create a community
@@ -125,9 +138,9 @@ const Communities = (props) => {
                     <Grid item>
                         <Typography variant='h4' style={{textAlign: 'center', margin: '2.5em 0'}}>Communities of UNITE</Typography>
                     </Grid>
-                    <Grid item container direction='row' justify='space-between' >
+                    <Grid item container direction='row' justify={matchesXS ? 'center' : 'space-between'} >
                     {communities ? communities.map((community, i) => (
-                        <Grid align='center' lg={4} item key={community.title} style={{marginBottom: '4em'}} >
+                        <Grid align='center' lg={4} md={6} item key={community.title} style={{marginBottom: '4em'}} >
                             <CardCommunity
                                 members={community.members.length}
                                 title={community.title}
@@ -136,6 +149,7 @@ const Communities = (props) => {
                                 id={community._id}
                                 image={community.image}
                                 buttonText='Join Community!'
+                                isAuth={true}
                             />
                         </Grid>   
                     )) : null}

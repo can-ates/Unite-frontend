@@ -21,6 +21,7 @@ export default function(WrappedComponent, isRestricted){
         
         this.props.dispatch(actions.authUser()).then(response => {
 
+
             this.setState({loading: false})
 
             if(!this.props.user.isAuth && isRestricted) {

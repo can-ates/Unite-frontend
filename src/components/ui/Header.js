@@ -5,16 +5,22 @@ import {connect} from 'react-redux'
 
 import { makeStyles } from "@material-ui/core/styles";
 import useScrollTrigger from "@material-ui/core/useScrollTrigger";
+
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useTheme } from "@material-ui/core/styles";
+import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Button from "@material-ui/core/Button";
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
+import IconButton from "@material-ui/core/IconButton";
+import MenuIcon from "@material-ui/icons/Menu";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
 
-import Unite from '../../assets/unnamed.png'
+import Unite from '../../assets/unite.png'
 
 import Auth from '../../hoc/Auth'
 import * as actions from '../../actions/user'
@@ -34,7 +40,7 @@ function ElevationScroll(props) {
 
 const useStyles = makeStyles(theme => ({
     appbar : {
-        backgroundColor: theme.palette.secondary.light
+        backgroundColor: '#0C7C8A'
     },
 
     toolbarMargin: {
@@ -51,8 +57,13 @@ const useStyles = makeStyles(theme => ({
         padding: 0,
     },
     logo: {
-        height: '6.5em',
-        width: '11em'
+        height: '5em',
+        width: '15em',
+        [theme.breakpoints.down('sm')]: {
+            height: '3.5em',
+            width: '11em'
+        }
+
     },
     tabContainer: {
         marginLeft: 'auto',
@@ -61,14 +72,42 @@ const useStyles = makeStyles(theme => ({
         color: '#fff',
         minWidth: '6.5em',
         marginLeft: '1.5em'
-    }
+    },
+    drawer: {
+        backgroundColor: '#0C7C8A'
+      },
+    drawerIcon: {
+        height: "50px",
+        width: "50px"
+    },
+    drawerIconContainer: {
+        marginLeft: "auto",
+        color: 'white',
+        "&:hover": {
+          backgroundColor: "transparent"
+        }
+    },
+    drawerItemSelected: {
+        "& .MuiListItemText-root": {
+          opacity: 1
+        }
+    },
+    drawerItem: {
+        ...theme.typography.tab,
+        color: "white",
+        opacity: 0.7
+      },
 }))
 
 
 
 const Header = (props) => {
+    const classes = useStyles();
+    const theme = useTheme()
+    const matches = useMediaQuery(theme.breakpoints.down("sm"))
+    const iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent);
     
-    
+    const [openDrawer, setOpenDrawer] = useState(false);
     const [toggleHeader, setToggleHeader] = useState(false)
     const [toggleLogOut, setToggleLogOut] = useState(false)
     
@@ -99,7 +138,6 @@ const Header = (props) => {
         }
 
         
-        
       }, [props.value, pages, props]);
 
     useEffect(() => {
@@ -119,10 +157,8 @@ const Header = (props) => {
     }
 
 
-    const classes = useStyles();
-    const theme = useTheme()
-
     
+    const uri = window.location.pathname.split('/')[1]
 
     const tabs = (
         <React.Fragment>
@@ -168,10 +204,89 @@ const Header = (props) => {
         </React.Fragment>
     )
 
+    const drawer = (
+        <React.Fragment>
+            <SwipeableDrawer
+                disableBackdropTransition={!iOS}
+                disableDiscovery={iOS}
+                open={openDrawer}
+                onClose={() => setOpenDrawer(false)}
+                onOpen={() => setOpenDrawer(true)}
+                classes={{ paper: classes.drawer }}
+            >
+                <List disablePadding>
+                    {pages.map((page, i) => (
+                        <ListItem
+                            divider
+                            key={`${page}-${i}`}
+                            button
+                            component={Link}
+                            to={page.link}
+                            selected={props.value === page.activeIndex}
+                            classes={{ selected: classes.drawerItemSelected }}
+                            onClick={() => {
+                            setOpenDrawer(false);
+                            props.setValue(page.activeIndex);
+                            }}
+                        >
+                            <ListItemText className={classes.drawerItem} disableTypography>
+                            {page.name}
+                            </ListItemText>
+                        </ListItem>
+                        ))}
+                        {
+                            props.user.isAuth ? null : <ListItem
+                                onClick={() => {
+                                    setOpenDrawer(false);
+                                    props.setValue(2);
+                                }}
+                                divider
+                                button
+                                component={Link}
+                                to='/joinus'
+                                classes={{
+                                    root: classes.drawerItemEstimate,
+                                    selected: classes.drawerItemSelected
+                                }}
+                                selected={props.value === 2}
+                            >
+                                <ListItemText className={classes.drawerItem} disableTypography>
+                                    Join Us
+                                </ListItemText>
+                            
+                            </ListItem>                              
+                        }
+                        {
+                            props.user.isAuth ? <ListItem
+                                onClick={() => {
+                                    setOpenDrawer(false);
+                                    handleLogOut()
+                                }}
+                                divider
+                                button
+                            >
+                                <ListItemText className={classes.drawerItem} disableTypography>
+                                    Log Out
+                                </ListItemText>
+                            
+                            </ListItem> : null
+                        }
+                </List>
+            </SwipeableDrawer>
+            <IconButton
+                className={classes.drawerIconContainer}
+                onClick={() => setOpenDrawer(!openDrawer)}
+                disableRipple
+            >
+                <MenuIcon className={classes.drawerIcon} />
+            </IconButton>
+        </React.Fragment>
+    )
+
     return (
         <React.Fragment>
             <ElevationScroll>
-                <AppBar position={toggleHeader ? 'fixed' : 'absolute'} className={classes.appbar} style={{backgroundColor: toggleHeader ? null : "transparent", zIndex: '15'}}>
+                <AppBar position={toggleHeader ? 'fixed' : 'absolute'} className={classes.appbar} style={{backgroundColor: toggleHeader ? null : (uri === 'community' || uri === 'joinus') ? '#0C7C8A' : 'transparent', zIndex: '15'}}>
                     <Toolbar>
                         <Button
                             component={Link}
@@ -182,7 +297,7 @@ const Header = (props) => {
                         >
                             <img alt='site logo' className={classes.logo} src={Unite} />
                         </Button>
-                        {tabs}
+                        {matches ? drawer : tabs}
                     </Toolbar>
                 </AppBar>
             </ElevationScroll>
