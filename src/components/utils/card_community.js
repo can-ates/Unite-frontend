@@ -1,6 +1,5 @@
 import React from 'react'
 import {withRouter} from 'react-router-dom'
-import axios from 'axios'
 
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
@@ -49,6 +48,8 @@ const CardCommunity = React.memo(props => {
     const classes = useStyles()
     const theme = useTheme()
 
+    
+
     const handleVisit = () => {
         props.history.push(`/community/${props.id}`)
     }
@@ -61,7 +62,8 @@ const CardCommunity = React.memo(props => {
         <Card className={classes.root} style={{maxWidth: props.width ? props.width : '25em' }}>
             <CardActionArea>
                 <CardMedia
-                    style={{height: props.height ? props.height : 125, width: '100%'}}
+                    component='img'
+                    style={{height: props.height ? props.height : 125, width: '100%', objectFit: "fill"}}
                     image={props.image}
                     title="community image"
                 />

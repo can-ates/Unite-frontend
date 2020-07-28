@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import axios from 'axios';
 import moment from 'moment'
 
@@ -17,11 +16,12 @@ import Button from '@material-ui/core/Button';
 
 import IconButton from '@material-ui/core/IconButton';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import CardCommunity from './utils/card_community'
 import ShowMembers from './utils/show_members'
-import Auth from '../hoc/Auth'
 
+import Auth from '../hoc/Auth'
 
 const useStyles = makeStyles(theme => ({
     back : { 
@@ -32,7 +32,10 @@ const useStyles = makeStyles(theme => ({
             zIndex: -1,
             boxShadow: '0px 12px 42px -13px rgba(3,1,0,1)',
             overflow: 'hidden',
-            height: '100%'
+            height: '100%',
+            [theme.breakpoints.down("sm")]: {
+                overflow: 'auto'
+            },
             
     },
     postContainer: {
@@ -41,6 +44,10 @@ const useStyles = makeStyles(theme => ({
         [theme.breakpoints.down("md")]: {
           marginBottom: "2em"
         },
+        [theme.breakpoints.down("sm")]: {
+            padding: '0',
+            marginTop: '4em'
+        },
         [theme.breakpoints.down("xs")]: {
           marginBottom: "1.5em"
         },
@@ -48,6 +55,10 @@ const useStyles = makeStyles(theme => ({
     },
     posts: {
         padding: '0 0 0 2em',
+        [theme.breakpoints.down("sm")]: {
+            paddingLeft: '0',
+            order: '1'
+          },
         height: '100vh',
         "overflow-y": 'scroll',
         
@@ -70,7 +81,12 @@ const useStyles = makeStyles(theme => ({
         },
         overflow: 'auto',
         height: '100vh', 
-        paddingBottom: '6em'
+        paddingBottom: '6em',
+        [theme.breakpoints.down("sm")]: {
+            height: '60vh',
+            order: '2'
+            
+          },
     },
     postCard : {
         borderRadius: '0',
@@ -100,12 +116,23 @@ const useStyles = makeStyles(theme => ({
             backgroundColor: theme.palette.secondary.light,
         }   
     },
-    
+    members : {
+        marginTop: '2.5em', 
+        width: '100%',
+        [theme.breakpoints.down("sm")]: {
+            width: '50%'
+          },
+          [theme.breakpoints.down("xs")]: {
+            width: '100%'
+          },
+    }
 }))
 
 const Post = (props) => {
     const classes = useStyles()
     const theme = useTheme()
+    const matchesSM = useMediaQuery(theme.breakpoints.down("sm"));
+    const matchesXS = useMediaQuery(theme.breakpoints.down("xs"));
 
     const [member, setMember] = useState(null)
     const [community, setCommunity] = useState(null)
@@ -113,12 +140,11 @@ const Post = (props) => {
     const [comments, setComments] = useState([])
     const [comment, setComment] = useState('')
 
-
+    const [refresh, setRefresh] = useState('')
 
     useEffect(() => {
-        axios.get(`/api/community/auth/${props.match.params.id}`)
+        axios.get(`/api/community/auth/${props.match.params.id}`, {withCredentials: true})
         .then(res => {
-            console.log(res.data)
             setMember(res.data)
         })
     }, [])
@@ -127,7 +153,7 @@ const Post = (props) => {
     useEffect(() => {
         props.setValue(1)
         
-        axios.get(`/api/community/${props.match.params.id}`)
+        axios.get(`/api/community/${props.match.params.id}`, {withCredentials: true})
         .then(res => {
             setCommunity(res.data.community)
             
@@ -139,18 +165,25 @@ const Post = (props) => {
     //For Post
     useEffect(() => {
         
-        axios.get(`/api/post/${props.match.params.postId}`)
+        axios.get(`/api/post/${props.match.params.postId}`, {withCredentials: true})
         .then(res => {
-            console.log(res.data)
             setComments(res.data.post.comments)
             setPost(res.data.post)
         })
+    }, [refresh])
+
+    useEffect(() => {
+        axios.get(`/api/community/auth/${props.match.params.id}`, {withCredentials: true})
+        .then(res => {
+            setMember(res.data)
+        })
     }, [])
 
+
     const handleMember = () => {
-        axios.post(`/api/community/${props.match.params.id}/beMember`)
+        axios.post(`/api/community/${props.match.params.id}/beMember`, {withCredentials: true})
         .then(res => {
-            console.log(res.data)
+            setRefresh(res.data)
         })
     }
 
@@ -159,9 +192,10 @@ const Post = (props) => {
             text: comment
         }
 
-        axios.post(`/api/${props.match.params.id}/post/${props.match.params.postId}/add-comment`, dataToSubmit)
+        axios.post(`/api/${props.match.params.id}/post/${props.match.params.postId}/add-comment`, dataToSubmit, {withCredentials: true})
         .then(res => {
-            console.log(res.data)
+            setRefresh(res.data)
+            setComment('')
         })
     }
 
@@ -171,12 +205,12 @@ const Post = (props) => {
                 
                 <Card key={`${comment._id}-${i}`} className={classes.commentCard}>
                     <Grid container direction='row' >
-                        <Grid lg={1} item style={{paddingTop: '0.7em', paddingLeft: '1em'}}>
+                        <Grid xs={1} item style={{paddingTop: '0.7em', paddingLeft: matchesXS ? '0' : '1em'}}>
                             <Avatar aria-label="user avatar"  style={{backgroundColor: 'grey'}}>
                                 {comment.name.charAt(0)}
                             </Avatar>
                         </Grid>
-                        <Grid lg={11} item>
+                        <Grid xs={11} item>
                                 
                             <CardHeader
                                 title={<Typography variant='caption' display='inline'>{`${comment.user.name} ${comment.user.lastname} · `}</Typography>}
@@ -204,8 +238,8 @@ const Post = (props) => {
     return (
         <div className={classes.back}>
         <Grid container direction='row' className={classes.postContainer}>
-            <Grid item lg={4} className={classes.Info}>
-                <Grid item container direction='column'>
+            <Grid item md={4} xs={12} className={classes.Info}>
+                <Grid item container direction='column' alignContent={matchesSM ? 'center' : null}>
                     <Grid item>
                         { community ? <CardCommunity
                             members={community.members.length}
@@ -216,12 +250,13 @@ const Post = (props) => {
                             image={community.image}
                             buttonText='Be a member'
                             beMember={handleMember}
-                            width='90%'
+                            isAuth={props.user.isAuth ? true : false}
+                            width='100%'
                             height={150}
                             isMember={member ? member.isMember : null}
                         /> : null }
                     </Grid>
-                    <Grid item style={{marginTop: '2.5em', width: '90%'}}>
+                    <Grid item className={classes.members}>
                     {   
                         community ? <ShowMembers
                                        community={community}
@@ -230,7 +265,7 @@ const Post = (props) => {
                     </Grid>         
                 </Grid>
             </Grid>
-            <Grid item lg={8} className={classes.posts} >
+            <Grid item md={8} className={classes.posts} >
                 <Grid item container direction='column'  >
                     <Grid item >
                         {post ? <Card className={classes.postCard} >
@@ -238,7 +273,7 @@ const Post = (props) => {
                                 <Grid item style={{paddingTop: '0.7em', paddingLeft: '1em'}}>
                                     <Grid container direction='row' alignItems='center'>
                                         <Grid item>
-                                            <Avatar aria-label="user avatar"  style={{backgroundColor: '#'+(0x1000000+(Math.random())*0xffffff).toString(16).substr(1,6)}}>
+                                            <Avatar aria-label="user avatar"  style={{backgroundColor: 'grey'}}>
                                                 {post.author.name.charAt(0)}
                                             </Avatar>
                                         </Grid>
@@ -261,12 +296,12 @@ const Post = (props) => {
                         </Card> : null}
                     </Grid>
                     
-                    <Grid item style={{paddingBottom: '6em'}}>
+                    <Grid item >
                        {
                            showComments()
                        }
                     </Grid>
-                    <Grid item style={{position: 'sticky', bottom: '6em'}}>
+                    <Grid item style={{position: 'sticky', bottom: matchesSM ? '4em' : '6em'}}>
                         
                             { member ? member.isMember && <Paper className={classes.comment}>
                                 <IconButton aria-label="user">
@@ -303,4 +338,4 @@ const Post = (props) => {
     )
 }
 
-export default Post
+export default Auth(Post, false)

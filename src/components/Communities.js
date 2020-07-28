@@ -12,7 +12,6 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 import ahoy1 from '../assets/Sun-Tornado1.svg'
 
 import SearchCommunity from './utils/search_community'
-import Auth from '../hoc/Auth'
 import CardCommunity from '../components/utils/card_community'
 
 const useStyles = makeStyles(theme => ({
@@ -76,16 +75,14 @@ const Communities = (props) => {
     const classes = useStyles()
     const theme = useTheme()
     const matchesXS = useMediaQuery(theme.breakpoints.down("xs"));
-    const matchesMD = useMediaQuery(theme.breakpoints.down("md"));
-    
-
 
     const [communities, setCommunities] = useState([])
     const [skip, setSkip] = useState(0)
     
 
     useEffect(() => {
-        axios.get('/api/allCommunities?limit=9&skip=0&sortBy=members&order=desc').then((res) => {
+        axios.get('/api/allCommunities?limit=9&skip=0&sortBy=members&order=desc', {withCredentials: true})
+        .then((res) => {
             setCommunities(res.data.community)
         })
     }, [])
@@ -93,7 +90,8 @@ const Communities = (props) => {
     const showCards = (a) => {
         let sk = skip + a 
 
-        axios.get(`/api/allCommunities?limit=9&skip=${sk}&sortBy=members&order=desc`).then((res) => {
+        axios.get(`/api/allCommunities?limit=9&skip=${sk}&sortBy=members&order=desc`, {withCredentials: true})
+        .then((res) => {
             setCommunities(res.data.community)
             setSkip(sk)
         })

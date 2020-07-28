@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import axios from 'axios';
 
@@ -72,13 +72,12 @@ const SearchCommunity = () => {
     const handleSearch = (e) => {
         setSearch(e.target.value)
 
-        if(e.target.value != ''){
+        if(e.target.value !== ''){
             setLoading(true)
-            axios.get(`/api/searchCommunities?limit=5&sortBy=${e.target.value}&order=desc`)
+            axios.get(`/api/searchCommunities?limit=5&sortBy=${e.target.value}&order=desc`, {withCredentials: true})
             .then((res) => {
                 setSearchResult(res.data.community)
                 setLoading(res.data ? false : true)
-                console.log(res.data.community)
                 
             })
         } else setLoading(false); setSearchResult('')

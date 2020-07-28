@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import axios from 'axios';
 import moment from 'moment'
 
@@ -12,11 +11,13 @@ import InputBase from '@material-ui/core/InputBase';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import Typography from "@material-ui/core/Typography";
+import Hidden from '@material-ui/core/Hidden';
 
 import IconButton from '@material-ui/core/IconButton';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import CommentIcon from '@material-ui/icons/Comment';
 import { makeStyles, useTheme } from "@material-ui/core/styles";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import CardCommunity from './utils/card_community'
 import Auth from '../hoc/Auth'
@@ -32,7 +33,7 @@ const useStyles = makeStyles(theme => ({
             top: '0',
             zIndex: -100,
             boxShadow: '0px 12px 42px -13px rgba(3,1,0,1)',
-            overflow: 'hidden',
+            overflow: 'auto',
             height: '100%'
             
     },
@@ -42,6 +43,9 @@ const useStyles = makeStyles(theme => ({
         [theme.breakpoints.down("md")]: {
           marginBottom: "2em"
         },
+        [theme.breakpoints.down("sm")]: {
+            padding: '0'
+        },
         [theme.breakpoints.down("xs")]: {
           marginBottom: "1.5em"
         },
@@ -50,11 +54,10 @@ const useStyles = makeStyles(theme => ({
         marginTop : '0.75em',
     },
     posts: {
-        padding: '0 0 0 2em',
-        "&::-webkit-scrollbar" :{
-            width: '0px',
-            background: 'transparent',
-        },
+        paddingLeft: '2em',
+        [theme.breakpoints.down("sm")]: {
+            paddingLeft: '0',
+          },
         height: '100vh',
         "overflow-y": 'scroll',
         paddingBottom: '6em',
@@ -68,7 +71,9 @@ const useStyles = makeStyles(theme => ({
             backgroundColor: "rgb(255, 186, 96)",
             outline: '1px solid slategrey'
         },
-        
+        [theme.breakpoints.down("md")]: {
+            marginTop: "1.5em"
+          },
     },
     postTitle: {
         display: 'flex',
@@ -93,7 +98,11 @@ const useStyles = makeStyles(theme => ({
         },
         overflow: 'auto',
         height: '100vh', 
-        paddingBottom: '6em'
+        paddingBottom: '6em',
+        [theme.breakpoints.down("sm")]: {
+            height: '60vh',
+            
+          },
     },
     postCard : {
         '&:hover' : {
@@ -108,12 +117,24 @@ const useStyles = makeStyles(theme => ({
         "-webkit-line-clamp": '3',
         "-webkit-box-orient": "vertical",
         "overflow": "hidden",
+    },
+    members : {
+        marginTop: '2.5em', 
+        width: '100%',
+        [theme.breakpoints.down("sm")]: {
+            width: '50%'
+          },
+          [theme.breakpoints.down("xs")]: {
+            width: '100%'
+          },
     }
 }))
 
 const Community = React.memo(props => {
     const classes = useStyles()
     const theme = useTheme()
+    const matchesSM = useMediaQuery(theme.breakpoints.down("sm"));
+    const matchesXS = useMediaQuery(theme.breakpoints.down("xs"));
 
     const [member, setMember] = useState([])
     const [community, setCommunity] = useState(null)
@@ -126,7 +147,7 @@ const Community = React.memo(props => {
     useEffect(() => {
         props.setValue(1)
         
-        axios.get(`/api/community/${props.match.params.id}`)
+        axios.get(`/api/community/${props.match.params.id}`, {withCredentials: true})
         .then(res => {
             setCommunity(res.data.community)
             setPosts(res.data.community.posts)
@@ -134,16 +155,17 @@ const Community = React.memo(props => {
     }, [refresh])
 
     useEffect(() => {
-        axios.get(`/api/community/auth/${props.match.params.id}`)
+        axios.get(`/api/community/auth/${props.match.params.id}`, {withCredentials: true})
         .then(res => {
-            console.log(res.data)
             setMember(res.data)
         })
     }, [])
 
     const handleMember = () => {
-        axios.post(`/api/community/${props.match.params.id}/beMember`)
-        
+        axios.post(`/api/community/${props.match.params.id}/beMember`, {withCredentials: true})
+        .then(res => {
+            setRefresh(res.data)
+        })
     }
 
     const handleSubmit = (e) => {
@@ -153,7 +175,7 @@ const Community = React.memo(props => {
             description: description
         }
 
-        axios.post(`/api/post/${props.match.params.id}/create-post`, dataToSubmit)
+        axios.post(`/api/post/${props.match.params.id}/create-post`, dataToSubmit, {withCredentials: true})
         .then(res => {
             setRefresh(res.data)
             setHideDescription(true)
@@ -168,12 +190,12 @@ const Community = React.memo(props => {
                 
                 <Card key={`${post._id}-${i}`} className={classes.postCard} style={{borderLeft: post.comments.length > 0 ? '5px solid #FFBA60' : null}} onClick={() => goToComments(post._id)}>
                     <Grid container direction='row' >
-                        <Grid lg={1} item style={{paddingTop: '0.7em', paddingLeft: '1em'}}>
-                            <Avatar aria-label="user avatar"  style={{backgroundColor: '#'+(0x1000000+(Math.random())*0xffffff).toString(16).substr(1,6)}}>
+                        <Grid xs={1} item style={{paddingTop: '0.7em', paddingLeft: matchesXS ? '0' : '1em' }}>
+                            <Avatar aria-label="user avatar"  style={{backgroundColor: 'grey'}}>
                                 {post.author.name.charAt(0)}
                             </Avatar>
                         </Grid>
-                        <Grid lg={11} item>
+                        <Grid xs={11} item>
                                 
                             <CardHeader
                                 title={<Typography variant='caption' display='inline'>{`${post.author.name} ${post.author.lastname} · `}</Typography>}
@@ -211,8 +233,8 @@ const Community = React.memo(props => {
     return (
     <div className={classes.back}>
         <Grid container direction='row' className={classes.communityContainer}>
-            <Grid item lg={4} className={classes.Info}>
-                <Grid item container direction='column'>
+            <Grid item md={4}  xs={12} className={classes.Info} >
+                <Grid item container direction='column' alignContent={matchesSM ? 'center' : null}  >
                     <Grid item>
                         { community ? <CardCommunity
                             members={community.members.length}
@@ -223,13 +245,13 @@ const Community = React.memo(props => {
                             image={community.image}
                             buttonText='Be a member'
                             beMember={handleMember}
-                            width='90%'
+                            width='100%'
                             isAuth={props.user.isAuth ? true : false}
                             height={150}
                             isMember={member ? member.isMember : null}
                         /> : null }
                     </Grid>
-                    <Grid item style={{marginTop: '2.5em', width: '90%'}}>
+                    <Grid item className={classes.members}>
                         {
                            <ShowMembers 
                             community={community}
@@ -238,7 +260,7 @@ const Community = React.memo(props => {
                     </Grid>         
                 </Grid>
             </Grid>
-            <Grid item lg={8} className={classes.posts} >
+            <Grid item md={8} className={classes.posts} >
                 <Grid item container direction='column'>
                     <Grid item>
                         <Card style={{borderRadius: '0'}}>
@@ -256,17 +278,20 @@ const Community = React.memo(props => {
                                         onClick={() => setHideDescription(false)}
                                         
                                     />
-                                    { hideDescription ?
-                                        <Button 
-                                            type="submit"
-                                            variant='outlined' 
-                                            aria-label="post"
-                                            className={classes.postButton}
-                                            >
-                                            Post
-                                        </Button>
-                                        : null
-                                    }
+                                    <Hidden xsDown>
+                                        { hideDescription ?
+                                            <Button 
+                                                type="submit"
+                                                variant='outlined' 
+                                                aria-label="post"
+                                                className={classes.postButton}
+                                                >
+                                                Post
+                                            </Button>
+                                            : null
+                                        }
+                                    </Hidden>
+                                    
                                 </Paper>
                                 {
                                     hideDescription ? null : 

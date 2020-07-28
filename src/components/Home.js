@@ -17,6 +17,7 @@ import ahoy from '../assets/Rainbow-Vortex.svg'
 import SearchCommunity from './utils/search_community'
 import Auth from '../hoc/Auth'
 import CardCommunity from '../components/utils/card_community'
+import Footer from '../components/ui/Footer'
 
 const useStyles = makeStyles(theme => ({
     hero: {
@@ -72,7 +73,6 @@ const useStyles = makeStyles(theme => ({
         },
     },
     findCommunity: {
-        marginTop: '3em',
         [theme.breakpoints.down("xs")]: {
             marginTop: "1.5em"
           },
@@ -95,15 +95,14 @@ const Home = (props) => {
     const theme = useTheme();
     const matchesSM = useMediaQuery(theme.breakpoints.down("sm"));
     const matchesXS = useMediaQuery(theme.breakpoints.down("xs"));
-    const matchesMD = useMediaQuery(theme.breakpoints.down("md"));
 
 
     const [communities, setCommunities] = useState(null)
 
     useEffect(() => {
-        axios.get('/api/allCommunities?limit=3&sortBy=members&order=desc').then((res) => {
+        axios.get('/api/allCommunities?limit=3&sortBy=members&order=desc', {withCredentials: true})
+        .then((res) => {
             setCommunities(res.data.community)
-            console.log(res.data.community)
         })
     }, [])
 
@@ -205,6 +204,10 @@ const Home = (props) => {
                     <Grid item>
                         <SearchCommunity />
                     </Grid>
+                </Grid>
+                <Grid item>
+                    <Footer       
+                    />
                 </Grid>
             </Grid>
             

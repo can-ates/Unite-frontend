@@ -88,7 +88,7 @@ const useStyles = makeStyles(theme => ({
         }
     },
     drawerItemSelected: {
-        "& .MuiListItemText-root": {
+        "&.MuiListItemText-root": {
           opacity: 1
         }
     },
@@ -153,6 +153,7 @@ const Header = (props) => {
     const handleLogOut = () => {
         props.dispatch(actions.logOutUser()).then(() => {
             setToggleLogOut(false)
+            props.history.push('/')
         })
     }
 
@@ -286,7 +287,7 @@ const Header = (props) => {
     return (
         <React.Fragment>
             <ElevationScroll>
-                <AppBar position={toggleHeader ? 'fixed' : 'absolute'} className={classes.appbar} style={{backgroundColor: toggleHeader ? null : (uri === 'community' || uri === 'joinus') ? '#0C7C8A' : 'transparent', zIndex: '15'}}>
+                <AppBar position={toggleHeader ? 'fixed' : 'absolute'} className={classes.appbar} style={{backgroundColor: toggleHeader ? null : (uri === 'community' || uri === 'joinus' || uri === 'create-community') ? '#0C7C8A' : 'transparent', zIndex: '15'}}>
                     <Toolbar>
                         <Button
                             component={Link}

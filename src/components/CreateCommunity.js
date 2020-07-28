@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Link } from "react-router-dom";
 import axios from 'axios';
 import {useDropzone} from 'react-dropzone'
 
-import { makeStyles,useTheme } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import TextField from "@material-ui/core/TextField";
@@ -15,22 +14,17 @@ import Button from "@material-ui/core/Button";
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import Auth from '../hoc/Auth'
-import sunTornado from '../assets/Sun-Tornado.svg'
-
 
 
 const useStyles = makeStyles(theme => ({
     container: {
-        backgroundImage: `url(${sunTornado})`,
-        backgroundPosition: 'center',
-        backgroundSize: "cover",
-        height: '100vh',
+        backgroundColor: "#FAFAFA",
         width: '100%',
         position: 'absolute',
         top: '0',
         zIndex: -10,
         overflow: 'auto',
-        
+        height: '100%'
         
     },
     sad: {
@@ -44,15 +38,23 @@ const useStyles = makeStyles(theme => ({
         }
     },
     card: {
-        backgroundColor: 'transparent',
+        padding: '1.5em 2em 0 2em',
+        backgroundColor: '#0C7C8A',
         marginTop: '3em',
         minWidth: '50em',
-        boxShadow: '0px 0px 1px 3px rgb(255, 186, 96, 0.75)'
+        boxShadow: '0px 0px 3px 2px rgba(0,0,0,0.75)',
+        [theme.breakpoints.down("sm")]: {
+            minWidth: "25em"
+          },
+          [theme.breakpoints.down("xs")]: {
+            minWidth: "8em",
+            padding: '0'
+          }
     },
     coverPhoto: {
         width: '20em',
         height: '7em',
-        backgroundColor: theme.palette.secondary.dark,
+        backgroundColor: theme.palette.primary.main,
         borderRadius: '10px',
         marginBottom: '2em'
     },
@@ -63,7 +65,7 @@ const useStyles = makeStyles(theme => ({
         color: 'white',
         borderRadius: '10px',
         border: '1px solid white',
-    }
+    },
 }))
 
 const CreateCommunity = (props) => {
@@ -73,7 +75,6 @@ const CreateCommunity = (props) => {
     const [loading, setLoading] = useState(false)
 
     const classes = useStyles()
-    const theme = useTheme()
 
     useEffect(() => {
         props.setValue(1)
@@ -88,7 +89,7 @@ const CreateCommunity = (props) => {
         }
         formData.append('file', acceptedFile[0])
         setLoading(true)
-        axios.post('/api/community/uploadimage', formData, config)
+        axios.post('/api/community/uploadimage', formData, config , {withCredentials: true})
         .then(res => {
             console.log(res.data)
             setFile(res.data)
@@ -109,10 +110,13 @@ const CreateCommunity = (props) => {
             image: file.url
         }
 
-        axios.post('/api/community/add-community', dataToSubmit)
-        .then(res => {
-            console.log(res.data)
-        })
+        if(props.user.isAuth) {
+            axios.post('/api/community/add-community', dataToSubmit, {withCredentials: true})
+            .then(res => {
+                console.log(res.data)
+            })
+        } else props.history.push('/joinus')
+        
     }
     
 
@@ -162,11 +166,9 @@ const CreateCommunity = (props) => {
                                     id="title"
                                     required
                                     name="title"
-                                    variant="outlined"
-                                    margin='normal'
                                 />
                             </Grid>
-                            <Grid item>
+                            <Grid item style={{marginTop : '2em'}}>
                                 <TextField
                                     value={description}
                                     onChange={(e) => setDescription(e.target.value)}
@@ -176,12 +178,12 @@ const CreateCommunity = (props) => {
                                     id="description"
                                     required
                                     name="description"
-                                    variant="outlined"
                                 />
                             </Grid>
                             <Grid item>
                                 <CardActions>
                                     <Button
+                                        style={{marginTop : '3em'}}
                                         onClick={handleSubmit}
                                         disabled={(file && title && description) ? false : true}
                                     >

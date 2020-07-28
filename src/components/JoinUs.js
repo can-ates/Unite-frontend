@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import {useSelector, connect} from 'react-redux'
+import {connect} from 'react-redux'
 
 
 
@@ -14,12 +13,10 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
-import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import { Typography } from "@material-ui/core";
 
 
-import gradient from '../assets/shattered-island.gif'
 import * as actions from '../actions/user'
 
 import Auth from '../hoc/Auth'
@@ -52,16 +49,16 @@ const useStyles = makeStyles(theme => ({
         marginTop: '2em',
         minWidth: '25em',
         backgroundColor: '#0C7C8A',
-        boxShadow: '0px 0px 3px 2px rgba(0,0,0,0.75)'
-    },
-    root1: {    
-        marginTop: '2em',
-        minWidth: '25em',
-        backgroundColor: '#0C7C8A',
-        boxShadow: '0px 0px 3px 2px rgba(0,0,0,0.75)'
+        boxShadow: '0px 0px 3px 2px rgba(0,0,0,0.75)',
+        [theme.breakpoints.down("xs")]: {
+            minWidth: '20em'
+          },
     },
     Fields: {
-        padding: '0 3.5em 2em 3.5em'
+        padding: '0 3.5em 2em 3.5em',
+        [theme.breakpoints.down("xs")]: {
+            padding: '0'
+          },
     },
     errorMessage: {
         position: 'relative',
@@ -77,7 +74,6 @@ const useStyles = makeStyles(theme => ({
 
 
 const JoinUs = (props) => {
-    const user = useSelector(state => state.user.userData)
     
 
     const [open, setOpen] = useState(false);
@@ -111,7 +107,6 @@ const JoinUs = (props) => {
 
 
     const classes = useStyles();
-    const theme = useTheme();
 
 
     const handleRegister = () => {
@@ -248,7 +243,7 @@ const JoinUs = (props) => {
                             </Typography>
                         </Grid>
                         <Grid item>
-                            <Card className={classes.root1}  >
+                            <Card className={classes.root}  >
                             <CardContent>
                                 <Grid item container direction='column' className={classes.Fields}>
                                     <Grid item>

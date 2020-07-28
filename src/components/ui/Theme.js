@@ -99,6 +99,13 @@ export default createMuiTheme({
         },
       },
       overrides: {
+        MuiButton: {
+          root : {
+            '&.Mui-disabled' : {
+              color : '#AAD1D6'
+            }
+          }
+        },
         MuiInputLabel: {
           root: {
             color: 'white',
@@ -115,7 +122,7 @@ export default createMuiTheme({
             fontWeight: 600,
             '&.Mui-error': {
               borderBottom: `1px solid red`
-            }
+            },
           },
           underline: {
             "&:not($error):before": {
