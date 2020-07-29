@@ -19,6 +19,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
+import Typography from "@material-ui/core/Typography";
 
 import Unite from '../../assets/unite.png'
 
@@ -40,12 +41,13 @@ function ElevationScroll(props) {
 
 const useStyles = makeStyles(theme => ({
     appbar : {
-        backgroundColor: '#0C7C8A'
+        backgroundColor: '#0C7C8A',
+        height: '5em'
     },
 
     toolbarMargin: {
         ...theme.mixins.toolbar,
-        marginBottom: "3em",
+        marginBottom: "1.1em",
         [theme.breakpoints.down("md")]: {
           marginBottom: "2em"
         },
@@ -136,6 +138,9 @@ const Header = (props) => {
         if(window.location.pathname === '/joinus'){
             props.setValue(2)
         }
+        if(window.location.pathname === '/user/dashboard'){
+            props.setValue(2)
+        }
 
         
       }, [props.value, pages, props]);
@@ -168,6 +173,7 @@ const Header = (props) => {
                 onChange={handleChange}
                 className={classes.tabContainer}
                 indicatorColor='primary'
+                textColor='#FAFAFA'
                 centered={true}
             >
                 {pages.map((page, i) => (
@@ -178,7 +184,7 @@ const Header = (props) => {
                         to={page.link}
                         label={page.name}
                         disableRipple
-                        
+                        value={i}
                         
                     />
                 ))}
@@ -189,8 +195,17 @@ const Header = (props) => {
                         label='Join us'
                         component={Link}
                         to='/joinus'
-                        
+                        value={2}
                     />
+                }
+                {
+                    props.user.isAuth ? <Tab 
+                        className={classes.tab}
+                        disableRipple
+                        label={<Typography style={{fontSize: '0.770rem'}} variant='inherit' ><span style={{ color:'white',}}> Hello,</span><span style={{display: 'block', fontSize: '0.79rem'}} >{props.user.name}</span></Typography>}
+                        onClick={() => props.history.push('/user/dashboard')}
+                        value={2}
+                    /> : null
                 }
                 {
                     props.user.isAuth ? <Tab 
@@ -198,7 +213,7 @@ const Header = (props) => {
                         disableRipple
                         label='Log Out'
                         onClick={handleLogOut}
-                        
+                        value={3}
                     /> : null
                 }
             </Tabs>
@@ -236,7 +251,7 @@ const Header = (props) => {
                         </ListItem>
                         ))}
                         {
-                            props.user.isAuth ? null : <ListItem
+                            toggleLogOut ? null : <ListItem
                                 onClick={() => {
                                     setOpenDrawer(false);
                                     props.setValue(2);
@@ -287,7 +302,7 @@ const Header = (props) => {
     return (
         <React.Fragment>
             <ElevationScroll>
-                <AppBar position={toggleHeader ? 'fixed' : 'absolute'} className={classes.appbar} style={{backgroundColor: toggleHeader ? null : (uri === 'community' || uri === 'joinus' || uri === 'create-community') ? '#0C7C8A' : 'transparent', zIndex: '15'}}>
+                <AppBar position={toggleHeader ? 'fixed' : 'absolute'} className={classes.appbar} style={{backgroundColor: toggleHeader ? null : (uri === 'community' || uri === 'joinus' || uri === 'create-community' || uri === 'user') ? '#0C7C8A' : 'transparent', zIndex: '15'}}>
                     <Toolbar>
                         <Button
                             component={Link}

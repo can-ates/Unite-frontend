@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import {withRouter} from 'react-router-dom'
 
 import { makeStyles, useTheme } from '@material-ui/core/styles';
@@ -48,8 +48,6 @@ const CardCommunity = React.memo(props => {
     const classes = useStyles()
     const theme = useTheme()
 
-    
-
     const handleVisit = () => {
         props.history.push(`/community/${props.id}`)
     }
@@ -62,8 +60,7 @@ const CardCommunity = React.memo(props => {
         <Card className={classes.root} style={{maxWidth: props.width ? props.width : '25em' }}>
             <CardActionArea>
                 <CardMedia
-                    component='img'
-                    style={{height: props.height ? props.height : 125, width: '100%', objectFit: "fill"}}
+                    style={{height: props.height ? props.height : 125, width: '100%'}}
                     image={props.image}
                     title="community image"
                 />

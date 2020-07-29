@@ -8,6 +8,7 @@ import JoinUs from './components/JoinUs'
 import Community from './components/Community'
 import CreateCommunity from './components/CreateCommunity'
 import Post from './components/Post'
+import UserDashboard from './components/UserDashboard'
 
 
 
@@ -85,6 +86,16 @@ function App() {
               <JoinUs
                 {...props}
                 setValue={setValue}
+            />
+            )}
+          />
+          <Route
+            exact
+            path="/user/dashboard"
+            render={props => (
+              <UserDashboard
+                {...props}
+                setValue={setValue}                
             />
             )}
           />

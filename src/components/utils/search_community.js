@@ -17,7 +17,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
 
-
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 
 const useStyles = makeStyles(theme => ({
@@ -51,7 +51,10 @@ const useStyles = makeStyles(theme => ({
         marginTop: '0.2em',
         borderRadius: '10px',
         minWidth: '35em',
-        zIndex: '10'
+        zIndex: '10',
+        [theme.breakpoints.down('xs')]: {
+            minWidth: '19em',
+        }
     },
 }))   
 

@@ -91,7 +91,6 @@ const CreateCommunity = (props) => {
         setLoading(true)
         axios.post('/api/community/uploadimage', formData, config , {withCredentials: true})
         .then(res => {
-            console.log(res.data)
             setFile(res.data)
             setLoading(false)
         })
@@ -113,7 +112,7 @@ const CreateCommunity = (props) => {
         if(props.user.isAuth) {
             axios.post('/api/community/add-community', dataToSubmit, {withCredentials: true})
             .then(res => {
-                console.log(res.data)
+                props.history.push(`/community/${res.data.doc._id}`)
             })
         } else props.history.push('/joinus')
         
