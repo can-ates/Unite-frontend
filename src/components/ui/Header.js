@@ -69,6 +69,7 @@ const useStyles = makeStyles(theme => ({
     },
     tabContainer: {
         marginLeft: 'auto',
+        color:'white'
     },
     tab: {
         color: '#fff',
@@ -173,7 +174,6 @@ const Header = (props) => {
                 onChange={handleChange}
                 className={classes.tabContainer}
                 indicatorColor='primary'
-                textColor='#FAFAFA'
                 centered={true}
             >
                 {pages.map((page, i) => (
