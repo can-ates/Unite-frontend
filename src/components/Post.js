@@ -158,7 +158,7 @@ const Post = (props) => {
             setCommunity(res.data.community)
             
         })
-    }, [])
+    }, [refresh])
 
     
 

@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import axios from 'axios';
 
 import { makeStyles,useTheme } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
+
 import Typography from "@material-ui/core/Typography";
 
 
@@ -21,10 +19,8 @@ import Divider from '@material-ui/core/Divider';
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 
-import SearchCommunity from './utils/search_community'
+
 import Auth from '../hoc/Auth'
-import CardCommunity from './utils/card_community'
-import Footer from './ui/Footer'
 
 
 
@@ -102,7 +98,6 @@ const UserDashboard = (props) => {
     const classes = useStyles();
     const theme = useTheme();
     const matchesSM = useMediaQuery(theme.breakpoints.down("sm"));
-    const matchesXS = useMediaQuery(theme.breakpoints.down("xs"));
 
     const [followed, setFollowed] = useState([])
 

@@ -17,8 +17,6 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
 
-import useMediaQuery from "@material-ui/core/useMediaQuery";
-
 
 const useStyles = makeStyles(theme => ({
     searchBar:{
@@ -42,7 +40,8 @@ const useStyles = makeStyles(theme => ({
             minWidth: '16em',
         },
         [theme.breakpoints.down('xs')]: {
-            minWidth: '12em',
+            minWidth: '6em',
+            maxWidth: '9em',
         }
     },
     resultList: {
@@ -53,8 +52,10 @@ const useStyles = makeStyles(theme => ({
         minWidth: '35em',
         zIndex: '10',
         [theme.breakpoints.down('xs')]: {
-            minWidth: '19em',
-        }
+            minWidth: '16em',
+            maxWidth: '20em',
+        },
+        
     },
 }))   
 

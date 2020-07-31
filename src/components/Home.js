@@ -71,6 +71,9 @@ const useStyles = makeStyles(theme => ({
         '&:hover': {
             backgroundColor: theme.palette.primary.light
         },
+        [theme.breakpoints.down("xs")]: {
+            fontSize: '0.75rem'
+          }
     },
     findCommunity: {
         [theme.breakpoints.down("xs")]: {
@@ -113,14 +116,14 @@ const Home = (props) => {
             <div  style={{position: 'relative', height: '100%', display: 'flex'}}>
             <Grid container direction='row'  className={classes.sad}>
                 <Grid item container md={3}> 
-                    <Grid container direction='column' alignItems='center' justify='space-around'>
+                    <Grid container direction='column' alignItems='center' justify={matchesXS ? 'center' : 'space-around'}>
                         <Grid item>
-                            <Typography variant='h5' align='center' >
+                            <Typography variant={matchesXS ? 'body2' : 'h5'} align='center' >
                                 Build a great online community
                             </Typography>
                         </Grid>
                         <Grid item>
-                            <Typography variant='h5' align='center'>
+                            <Typography variant={matchesXS ? 'body2' : 'h5'} style={{margin: matchesXS && '1em 0'}} align='center'>
                                 Unite enables you to create amazing and successful communities
                             </Typography>
                         </Grid>
@@ -130,7 +133,7 @@ const Home = (props) => {
                             to="/create-community"
                             className={classes.heroButton}
                             variant="contained"
-                            size='medium'
+                            size={matchesXS ? 'small' : 'medium'}
                             onClick={() => props.setValue(3)}
                             
                             >
@@ -149,14 +152,14 @@ const Home = (props) => {
                     </Grid>
                 </Hidden>
                 <Grid item container md={3}> 
-                    <Grid container direction='column' alignItems='center' justify='space-around'>
+                    <Grid container direction='column' alignItems='center' justify={matchesXS ? 'center' : 'space-around'}>
                         <Grid item>
-                            <Typography variant='h5' align='center'>
+                            <Typography variant={matchesXS ? 'body2' : 'h5'} align='center'>
                             Experience more
                             </Typography>
                         </Grid>
                         <Grid item>
-                            <Typography variant='h5' align='center'>
+                            <Typography variant={matchesXS ? 'body2' : 'h5'} style={{margin: matchesXS && '1em 0'}} align='center'>
                             Communities can be easily discovered 
                             </Typography>
                         </Grid>
@@ -166,7 +169,7 @@ const Home = (props) => {
                             to="/communities"
                             className={classes.heroButton}
                             variant="contained"
-                            size='medium'
+                            size={matchesXS ? 'small' : 'medium'}
                             onClick={() => props.setValue(1)}
                             
                             >
@@ -199,7 +202,7 @@ const Home = (props) => {
                 </Grid>
                 <Grid item container direction='column' alignItems='center' className={classes.findCommunity}>
                     <Grid item>
-                        <Typography variant='h4' style={{margin: '1em 0', color: 'white'}}>Find Communities</Typography>
+                        <Typography variant={matchesXS ? 'h5' : 'h4'} style={{margin: '1em 0', color: 'white'}}>Find Communities</Typography>
                     </Grid>
                     <Grid item>
                         <SearchCommunity />

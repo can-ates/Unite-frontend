@@ -1,5 +1,5 @@
 import React from 'react'
-import { makeStyles , useTheme} from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 
 import Hidden from '@material-ui/core/Hidden';
@@ -45,7 +45,7 @@ const useStyles = makeStyles(theme => ({
 
 const Footer = () => {
     const classes = useStyles();
-    const theme = useTheme()
+    
     return (
     <Hidden smDown>
         <div className={classes.footer}>

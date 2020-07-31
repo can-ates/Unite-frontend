@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React from 'react'
 import {withRouter} from 'react-router-dom'
 
 import { makeStyles, useTheme } from '@material-ui/core/styles';
@@ -44,7 +44,7 @@ const useStyles = makeStyles(theme => ({
 
 
 
-const CardCommunity = React.memo(props => {
+const CardCommunity = props => {
     const classes = useStyles()
     const theme = useTheme()
 
@@ -85,6 +85,6 @@ const CardCommunity = React.memo(props => {
             </CardActions>
         </Card>
     )
-})
+}
 
 export default withRouter(CardCommunity)
