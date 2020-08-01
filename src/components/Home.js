@@ -83,7 +83,7 @@ const useStyles = makeStyles(theme => ({
         backgroundPosition: 'center',
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
-        height: '30vh',
+        height: '300px',
         boxShadow: '0px 0px 27px -5px rgba(3,1,0,1)',
         marginTop: '4em'
     },

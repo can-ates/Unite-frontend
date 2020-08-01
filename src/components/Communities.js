@@ -20,15 +20,15 @@ const useStyles = makeStyles(theme => ({
         backgroundPosition: 'center',
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
-        height: '60vh',
+        height: '600px',
         width: '100%',
         position: 'absolute',
         top: '0',
         zIndex: -1,
-        [theme.breakpoints.down("md")]: {
-        
-          },
-    },
+        [theme.breakpoints.down("sm")]: {
+            height: '500px'
+          }
+      },
     sad: {
         marginTop: '6em',
         padding: '0 1em',
@@ -102,9 +102,9 @@ const Communities = (props) => {
     return (
         <div className={classes.searchContent}>
             <div style={{position: 'relative', height: '100%', display: 'flex'}}>
-                <Grid container direction='column' alignItems='center' className={classes.sad}>
+                <Grid container direction='column' alignItems='center' justify="space-evenly" className={classes.sad}>
                     <Grid item>
-                        <Typography variant='h4' style={{marginBottom: '1em', color: 'white'}}>Find Communities</Typography>
+                        <Typography variant={matchesXS ? 'h5' : 'h3'} style={{color: 'white'}}>Find Communities</Typography>
                     </Grid>
                     <Grid item>
                         <SearchCommunity />

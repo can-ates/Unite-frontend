@@ -51,9 +51,12 @@ const useStyles = makeStyles(theme => ({
         borderRadius: '10px',
         minWidth: '35em',
         zIndex: '10',
+        [theme.breakpoints.down('sm')]: {
+            minWidth: '23.5em'
+        },
         [theme.breakpoints.down('xs')]: {
-            minWidth: '16em',
-            maxWidth: '20em',
+            minWidth: '15em',
+            maxWidth: '19em',
         },
         
     },
