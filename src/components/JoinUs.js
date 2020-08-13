@@ -145,7 +145,7 @@ const JoinUs = (props) => {
                             </Typography>
                         </Grid>
                         <Grid item>
-                            <Card className={classes.root}  >
+                            <Card className={classes.root}>
                                 <CardContent>
                                     <Grid item container direction='column' className={classes.Fields}>
                                         <Grid item>
