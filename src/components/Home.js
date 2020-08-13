@@ -77,7 +77,8 @@ const useStyles = makeStyles(theme => ({
     },
     findCommunity: {
         [theme.breakpoints.down("xs")]: {
-            marginTop: "1.5em"
+            marginTop: "1.5em",
+            height: '200px',
           },
         backgroundImage: `url(${ahoy})`,
         backgroundPosition: 'center',
@@ -218,4 +219,4 @@ const Home = (props) => {
     )
 }
 
-export default Auth(Home, false)
+export default Auth(Home, true)

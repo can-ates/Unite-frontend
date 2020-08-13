@@ -2,13 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+
     <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Web site created using create-react-app"
-    />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <meta name="Unite" content="Create communities or join them" />
+
     <!--
       manifest.json provides metadata used when your web app is installed on a
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
@@ -17,7 +14,7 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css?family=Pacifico|Raleway:100,400,400i,700|Roboto:300,400,500,700&display=swap"
     />
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+
     <!--
       Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.
@@ -27,30 +24,12 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>React App</title>
-    <meta name="viewport" id="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
-
-    <script>
-    // Global boolean variable that holds the current orientation
-    var pageInPortraintMode;
-
-    // Listen for window resizes to detect orientation changes
-    window.addEventListener("resize", windowSizeChanged);
-
-    // Set the global orientation variable as soon as the page loads
-    addEventListener("load", function() {
-      pageInPortraintMode = window.innerHeight > window.innerWidth;
-      document.getElementById("viewport").setAttribute("content", "width=" + window.innerWidth + ", height=" + window.innerHeight + ", initial-scale=1.0, maximum-scale=1.0, user-scalable=0");
-    })
-
-    // Adjust viewport values only if orientation has changed (not on every window resize)
-    function windowSizeChanged() {
-      if (((pageInPortraintMode === true) && (window.innerHeight < window.innerWidth)) || ((pageInPortraintMode === false) && (window.innerHeight > window.innerWidth))) {
-        pageInPortraintMode = window.innerHeight > window.innerWidth;
-        document.getElementById("viewport").setAttribute("content", "width=" + window.innerWidth + ", height=" + window.innerHeight + ", initial-scale=1.0, maximum-scale=1.0, user-scalable=0");
-      }
-    }
-    </script>
+    <title>Unite</title>
+    <meta
+      name="viewport"
+      id="viewport"
+      content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
@@ -65,6 +44,5 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
-    <script crossorigin src="http://localhost:3002"></script>
   </body>
 </html>

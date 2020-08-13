@@ -313,4 +313,4 @@ const JoinUs = (props) => {
 
     
 
-export default Auth(connect()(JoinUs), null)
+export default connect()(Auth(JoinUs, null))

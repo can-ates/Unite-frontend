@@ -152,14 +152,14 @@ const Community = React.memo(props => {
             setCommunity(res.data.community)
             setPosts(res.data.community.posts)
         })
-    }, [refresh])
+    }, [refresh, props.match.params.id])
 
     useEffect(() => {
         axios.get(`/api/community/auth/${props.match.params.id}`, {withCredentials: true})
         .then(res => {
             setMember(res.data)
         })
-    }, [])
+    }, [refresh, props.match.params.id])
 
     const handleMember = () => {
         axios.post(`/api/community/${props.match.params.id}/beMember`, {withCredentials: true})
@@ -236,7 +236,7 @@ const Community = React.memo(props => {
             <Grid item md={4}  xs={12} className={classes.Info} >
                 <Grid item container direction='column' alignContent={matchesSM ? 'center' : null}  >
                     <Grid item>
-                        { community ? <CardCommunity
+                        { community && <CardCommunity
                             members={community.members.length}
                             title={community.title}
                             description={community.description}
@@ -249,7 +249,7 @@ const Community = React.memo(props => {
                             isAuth={props.user.isAuth ? true : false}
                             height={150}
                             isMember={member ? member.isMember : null}
-                        /> : null }
+                        />}
                     </Grid>
                     <Grid item className={classes.members}>
                         {
@@ -341,4 +341,4 @@ const Community = React.memo(props => {
     )
 })
 
-export default Auth(Community, false)
+export default Auth(Community, true)

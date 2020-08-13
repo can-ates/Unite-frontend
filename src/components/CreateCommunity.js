@@ -199,4 +199,4 @@ const CreateCommunity = (props) => {
     )
 }
 
-export default Auth(CreateCommunity, true)
+export default Auth(CreateCommunity, false)

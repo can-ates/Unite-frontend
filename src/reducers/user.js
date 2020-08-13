@@ -7,7 +7,7 @@ import {
 
 const INITIAL_STATE = {
     userData: {
-        isAuth: null
+        isAuth: false
     }
 }
 
@@ -31,7 +31,7 @@ export default function(state = INITIAL_STATE, action) {
         case LOGOUT_USER:
             return {
                 ...state,
-                userData: action.payload
+                userData: action.payload,
             }
         default:
             return state

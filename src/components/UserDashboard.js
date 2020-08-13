@@ -103,15 +103,20 @@ const UserDashboard = (props) => {
 
     useEffect(() => {
         setFollowed(props.user.memberships)
-    }, [])
+
+        if(!props.user.isAuth){
+            props.history.push('/')
+        }
+
+    }, [props.user.isAuth])
 
     const handleRoute = (id) => {
         props.history.push(`/community/${id}`)
     }
 
-    return (
+    return ( props.user.isAuth &&
         <div className={classes.dashboardWrapper}>
-            <Grid container direction={matchesSM ? 'column' : 'row'} justify={matchesSM && 'center'} className={classes.dashboard}>
+            <Grid container direction={matchesSM ? 'column' : 'row'} justify='center' alignContent='center' className={classes.dashboard}>
                 <Grid md={7} item container direction='column'  className={classes.dashboard__left} >
                     <Grid item>
                         <Card className={classes.userCard} >
@@ -177,4 +182,4 @@ const UserDashboard = (props) => {
     )
 }
 
-export default Auth(UserDashboard,true)
+export default Auth(UserDashboard,false)

@@ -27,7 +27,7 @@ export const loginUser =  (dataToSubmit)  =>  {
 }
 
 
-export  const  authUser = () => {
+export const authUser = () => {
 
     
         const res = axios.get("/api/users/auth", {withCredentials: true})
@@ -39,7 +39,7 @@ export  const  authUser = () => {
         }
 }
 
-export const  logOutUser =  () =>  {
+export const logOutUser =  () =>  {
     
     
         const res = axios.get('/api/users/logout', {withCredentials: true})
@@ -47,7 +47,7 @@ export const  logOutUser =  () =>  {
         
         return {
             type: LOGOUT_USER,
-            payload: res
+            payload: res,
         }
 } 
  
