@@ -114,6 +114,7 @@ const Home = (props) => {
 
     return (
         <div className={classes.hero}>
+            {/* HERO SECTION */}
             <div  style={{position: 'relative', height: '100%', display: 'flex'}}>
             <Grid container direction='row'  className={classes.sad}>
                 <Grid item container md={3}> 
@@ -181,6 +182,7 @@ const Home = (props) => {
                 </Grid>
             </Grid>  
             </div>
+            {/* BEST COMMUNITIES OF UNITE */}
             <Grid container direction='column' style={{marginTop: '2.5em' ,backgroundColor: '#f9f9f9'}}>
                 <Grid item style={{marginBottom: '3em'}}>
                     <Typography variant={matchesXS ? 'h6' : 'h4'} style={{textAlign: 'center',}}>Best Communities of UNITE</Typography>
@@ -201,6 +203,7 @@ const Home = (props) => {
                     </Grid>   
                 )) : null}
                 </Grid>
+                {/* SEARCH COMMUNITY */}
                 <Grid item container direction='column' alignItems='center' className={classes.findCommunity}>
                     <Grid item>
                         <Typography variant={matchesXS ? 'h5' : 'h4'} style={{margin: '1em 0', color: 'white'}}>Find Communities</Typography>

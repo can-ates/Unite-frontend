@@ -103,7 +103,7 @@ const UserDashboard = (props) => {
 
     useEffect(() => {
         setFollowed(props.user.memberships)
-
+        console.log(props.user)
         if(!props.user.isAuth){
             props.history.push('/')
         }

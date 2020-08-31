@@ -23,12 +23,12 @@
     "redux-thunk": "^2.3.0"
   },
   "scripts": {
-    "start": "set HTTPS=true&&react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "proxy": "https://localhost:3002",
+  "proxy": "http://localhost:3002",
   "eslintConfig": {
     "extends": "react-app"
   },

@@ -149,7 +149,7 @@ const Header = props => {
   };
 
   const handleLogOut = () => {
-    props.dispatch(actions.logOutUser()).then((res) => {
+    props.dispatch(actions.logOutUser()).then(res => {
         if(!res.isAuth){
             props.history.push('/')
         }
