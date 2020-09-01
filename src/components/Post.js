@@ -241,7 +241,7 @@ const Post = props => {
       title: newTitle,
       description: newDescription,
     };
-
+    
     axios
       .put(
         `/api/post/${props.match.params.postId}`,
@@ -253,6 +253,7 @@ const Post = props => {
         }
       )
       .then(res => {
+       
         setShowForm(false);
         setRefresh(res.data);
       });
@@ -275,7 +276,7 @@ const Post = props => {
 
   //UPDATE COMMENT
   const editComment = (id, newComment) => {
-    console.log(id, newComment)
+   
     let dataToSubmit = {
       _id: id,
       text: newComment,
@@ -300,7 +301,7 @@ const Post = props => {
 
     axios
       .post(
-        `/api/${props.match.params.id}/post/${props.match.params.postId}/update-comment`,
+        `/api/${props.match.params.id}/post/${props.match.params.postId}/delete-comment`,
         dataToSubmit,
         { withCredentials: true }
       )
@@ -329,7 +330,7 @@ const Post = props => {
             key={`${comment._id}-${i}`}
             user={props.user}
             editComment={(id, comment) => editComment(id, comment)}
-            deleteComment={(data) => deleteComment(data)}
+            deleteComment={(id) => deleteComment(id)}
           />
         ))
       : null;
