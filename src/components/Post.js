@@ -25,6 +25,7 @@ import Fade from '@material-ui/core/Fade';
 
 import CardCommunity from './utils/card_community';
 import ShowMembers from './utils/show_members';
+import Comments from './utils/Comments'
 
 import Auth from '../hoc/Auth';
 
@@ -165,9 +166,9 @@ const Post = props => {
   const [showForm, setShowForm] = useState(false);
   const [newTitle, setNewTitle] = useState('');
   const [newDescription, setNewDescription] = useState('');
+  
   const [refresh, setRefresh] = useState('');
   const [open, setOpen] = useState(false);
-
 
   const handleClose = () => {
     setOpen(false);
@@ -272,72 +273,64 @@ const Post = props => {
       });
   };
 
+  //UPDATE COMMENT
+  const editComment = (id, newComment) => {
+    console.log(id, newComment)
+    let dataToSubmit = {
+      _id: id,
+      text: newComment,
+    };
+
+    axios
+      .post(
+        `/api/${props.match.params.id}/post/${props.match.params.postId}/update-comment`,
+        dataToSubmit,
+        { withCredentials: true }
+      )
+      .then(res => {
+        setRefresh(res.data);
+      });
+  }
+
+  //DELETE COMMENT
+  const deleteComment = (id) => {
+    let dataToSubmit = {
+      _id: id,
+    };
+
+    axios
+      .post(
+        `/api/${props.match.params.id}/post/${props.match.params.postId}/update-comment`,
+        dataToSubmit,
+        { withCredentials: true }
+      )
+      .then(res => {
+        setRefresh(res.data);
+      });
+  }
+
   //DELETE COMMUNITY
   const deleteCommunity = () => {
     axios
-    .delete(`/api/community/${props.match.params.id}`, { withCredentials: true })
-    .then(res => {
-      res.data.success && props.history.push('/')
-    });
-  }
+      .delete(`/api/community/${props.match.params.id}`, {
+        withCredentials: true,
+      })
+      .then(res => {
+        res.data.success && props.history.push('/');
+      });
+  };
 
   //RENDER COMMENTS
   const showComments = () =>
     comments
       ? comments.map((comment, i) => (
-          <Card key={`${comment._id}-${i}`} className={classes.commentCard}>
-            <Grid container direction='row'>
-              <Grid
-                xs={1}
-                item
-                style={{
-                  paddingTop: '0.7em',
-                  paddingLeft: matchesXS ? '0' : '1em',
-                }}
-              >
-                <Avatar
-                  aria-label='user avatar'
-                  style={{ backgroundColor: 'grey' }}
-                >
-                  {comment.name.charAt(0)}
-                </Avatar>
-              </Grid>
-              <Grid xs={11} item>
-                <CardHeader
-                  title={
-                    <Typography
-                      variant='caption'
-                      display='inline'
-                    >{`${comment.user.name} ${comment.user.lastname} · `}</Typography>
-                  }
-                  subheader={
-                    <Typography
-                      style={{
-                        fontSize: '0.850rem',
-                        fontWeight: 900,
-                        color: '#6771A4',
-                      }}
-                      display='inline'
-                    >
-                      {moment(comment.createdAt).fromNow()}
-                    </Typography>
-                  }
-                  disableTypography
-                />
-
-                <CardContent style={{ paddingTop: '0', paddingBottom: '0' }}>
-                  <Typography
-                    className={classes.description}
-                    variant='subtitle2'
-                  >
-                    {comment.text}
-                  </Typography>
-                </CardContent>
-
-                <CardContent style={{ paddingBottom: '0' }}></CardContent>
-              </Grid>
-            </Grid>
-          </Card>
+          <Comments
+            comment={comment}
+            key={`${comment._id}-${i}`}
+            user={props.user}
+            editComment={(id, comment) => editComment(id, comment)}
+            deleteComment={(data) => deleteComment(data)}
+          />
         ))
       : null;
 
@@ -400,10 +393,7 @@ const Post = props => {
                         <Grid item>
                           <CardHeader
                             title={
-                              <Typography
-                                variant='caption'
-                                display='inline-block'
-                              >
+                              <Typography variant='caption' display='inline'>
                                 {`${post.author.name} ${post.author.lastname}`}
                               </Typography>
                             }
@@ -554,7 +544,7 @@ const Post = props => {
               Post will be deleted permanently
             </Typography>
 
-            <div style={{display: 'flex', justifyContent: 'space-between'}}>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <Button
                 onClick={() => setOpen(false)}
                 style={{ backgroundColor: 'grey', color: 'white' }}
