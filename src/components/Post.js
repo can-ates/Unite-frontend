@@ -19,6 +19,9 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import Modal from '@material-ui/core/Modal';
+import Backdrop from '@material-ui/core/Backdrop';
+import Fade from '@material-ui/core/Fade';
 
 import CardCommunity from './utils/card_community';
 import ShowMembers from './utils/show_members';
@@ -122,14 +125,29 @@ const useStyles = makeStyles(theme => ({
       width: '100%',
     },
   },
-  saveButton:{
-    backgroundColor: theme.palette.common.blue, 
+  saveButton: {
+    backgroundColor: theme.palette.common.blue,
     color: 'white',
-    '&:hover' : {
+    '&:hover': {
       color: theme.palette.common.orange,
-      backgroundColor: theme.palette.common.blue, 
-    }
-  }
+      backgroundColor: theme.palette.common.blue,
+    },
+  },
+  modal: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  paper: {
+    backgroundColor: theme.palette.background.paper,
+    border: `2px solid ${theme.palette.common.blue}`,
+    borderRadius: '10px',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+    '&:focus': {
+      outline: 'none',
+    },
+  },
 }));
 
 const Post = props => {
@@ -145,9 +163,15 @@ const Post = props => {
   const [comment, setComment] = useState('');
 
   const [showForm, setShowForm] = useState(false);
-  const [newTitle, setNewTitle] = useState('')
-  const [newDescription, setNewDescription] = useState('')
+  const [newTitle, setNewTitle] = useState('');
+  const [newDescription, setNewDescription] = useState('');
   const [refresh, setRefresh] = useState('');
+  const [open, setOpen] = useState(false);
+
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   //CHECK IF THE CURRENT USER IS MEMBER OF COMMUNITY AND GET DETAILS
   useEffect(() => {
@@ -210,24 +234,50 @@ const Post = props => {
       });
   };
 
+  //UPDATE POST
   const editPost = () => {
     let dataToSubmit = {
       title: newTitle,
-      description: newDescription
-    }
+      description: newDescription,
+    };
 
     axios
-    .put(`/api/post/${props.match.params.postId}`, 
-    {
-      dataToSubmit
-    },
-    {
-      withCredentials: true,
-    })
+      .put(
+        `/api/post/${props.match.params.postId}`,
+        {
+          dataToSubmit,
+        },
+        {
+          withCredentials: true,
+        }
+      )
+      .then(res => {
+        setShowForm(false);
+        setRefresh(res.data);
+      });
+  };
+
+  //DELETE POST
+  const deletePost = () => {
+    axios
+      .delete(`/api/post/${props.match.params.postId}`, {
+        withCredentials: true,
+      })
+      .then(res => {
+        if (res.data.success) {
+          setOpen(false);
+          props.history.push(`/community/${props.match.params.id}`);
+          setRefresh(true);
+        }
+      });
+  };
+
+  //DELETE COMMUNITY
+  const deleteCommunity = () => {
+    axios
+    .delete(`/api/community/${props.match.params.id}`, { withCredentials: true })
     .then(res => {
-      
-      setShowForm(false)
-      setRefresh(res.data);
+      res.data.success && props.history.push('/')
     });
   }
 
@@ -307,12 +357,14 @@ const Post = props => {
                 <CardCommunity
                   members={community.members.length}
                   title={community.title}
+                  isFounder={community.founder === props.user.id}
                   description={community.description}
                   founder={community.founder}
                   id={community._id}
                   image={community.image}
                   buttonText='Be a member'
                   beMember={handleMember}
+                  deleteCommunity={deleteCommunity}
                   isAuth={props.user.isAuth ? true : false}
                   width='100%'
                   height={150}
@@ -364,14 +416,16 @@ const Post = props => {
                       <CardContent style={{ paddingTop: '0' }}>
                         {showForm ? (
                           <InputBase
-                        value={newTitle}
-                        placeholder={post.title}
-                        type='text'
-                        fullWidth
-                        style={{border: `1px solid ${theme.palette.primary.main}`}}
-                        onChange={e => setNewTitle(e.target.value)}
-                        className={classes.commentInput}
-                      />
+                            value={newTitle}
+                            placeholder={post.title}
+                            type='text'
+                            fullWidth
+                            style={{
+                              border: `1px solid ${theme.palette.primary.main}`,
+                            }}
+                            onChange={e => setNewTitle(e.target.value)}
+                            className={classes.commentInput}
+                          />
                         ) : (
                           <Typography variant='h3' style={{ color: 'black' }}>
                             {post.title}
@@ -390,17 +444,19 @@ const Post = props => {
                         </Typography>
                         {showForm ? (
                           <InputBase
-                        value={newDescription}
-                        placeholder={post.description}
-                        type='text'
-                        fullWidth
-                        multiline={true}
-                        rows='2'
-                        style={{border: `1px solid ${theme.palette.primary.main}`}}
-                        rowsMax='10'
-                        onChange={e => setNewDescription(e.target.value)}
-                        className={classes.commentInput}
-                      />
+                            value={newDescription}
+                            placeholder={post.description}
+                            type='text'
+                            fullWidth
+                            multiline={true}
+                            rows='2'
+                            style={{
+                              border: `1px solid ${theme.palette.primary.main}`,
+                            }}
+                            rowsMax='10'
+                            onChange={e => setNewDescription(e.target.value)}
+                            className={classes.commentInput}
+                          />
                         ) : (
                           <Typography
                             align='left'
@@ -420,11 +476,20 @@ const Post = props => {
                             justifyContent: 'flex-end',
                           }}
                         >
-                          {showForm && <Button onClick={editPost} className={classes.saveButton} variant='contained' disabled={!newTitle || !newDescription} >Save</Button>}
+                          {showForm && (
+                            <Button
+                              onClick={editPost}
+                              className={classes.saveButton}
+                              variant='contained'
+                              disabled={!newTitle || !newDescription}
+                            >
+                              Save
+                            </Button>
+                          )}
                           <Button onClick={() => setShowForm(pr => !pr)}>
-                            <EditIcon  style={{ color: 'orange' }} />
+                            <EditIcon style={{ color: 'orange' }} />
                           </Button>
-                          <Button>
+                          <Button onClick={() => setOpen(true)}>
                             <DeleteIcon style={{ color: 'red' }} />
                           </Button>
                         </div>
@@ -471,6 +536,41 @@ const Post = props => {
           </Grid>
         </Grid>
       </Grid>
+      <Modal
+        aria-labelledby='transition-modal-title'
+        aria-describedby='transition-modal-description'
+        className={classes.modal}
+        open={open}
+        onClose={handleClose}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Fade in={open}>
+          <div className={classes.paper}>
+            <Typography style={{ marginBottom: '2em' }} color='secondary'>
+              Post will be deleted permanently
+            </Typography>
+
+            <div style={{display: 'flex', justifyContent: 'space-between'}}>
+              <Button
+                onClick={() => setOpen(false)}
+                style={{ backgroundColor: 'grey', color: 'white' }}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={deletePost}
+                style={{ backgroundColor: 'red', color: 'white' }}
+              >
+                Delete
+              </Button>
+            </div>
+          </div>
+        </Fade>
+      </Modal>
     </div>
   );
 };

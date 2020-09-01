@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { withRouter } from 'react-router-dom';
 
 import { makeStyles, useTheme } from '@material-ui/core/styles';
@@ -9,6 +9,9 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import Modal from '@material-ui/core/Modal';
+import Backdrop from '@material-ui/core/Backdrop';
+import Fade from '@material-ui/core/Fade';
 
 import PeopleIcon from '@material-ui/icons/People';
 
@@ -46,11 +49,32 @@ const useStyles = makeStyles(theme => ({
       backgroundColor: 'red',
     },
   },
+  modal: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  paper: {
+    backgroundColor: theme.palette.background.paper,
+    border: `2px solid ${theme.palette.common.blue}`,
+    borderRadius: '10px',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+    '&:focus': {
+      outline: 'none',
+    },
+  },
 }));
 
 const CardCommunity = props => {
   const classes = useStyles();
   const theme = useTheme();
+  const [open, setOpen] = useState(false)
+
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   const handleVisit = () => {
     props.history.push(`/community/${props.id}`);
@@ -61,58 +85,100 @@ const CardCommunity = props => {
   };
 
   return (
-    <Card
-      className={classes.root}
-      style={{ maxWidth: props.width ? props.width : '25em' }}
-    >
-      <CardActionArea>
-        <CardMedia
-          style={{ height: props.height ? props.height : 125, width: '100%' }}
-          image={props.image}
-          title='community image'
-        />
-      </CardActionArea>
-      <CardContent className={classes.content}>
-        <Typography variant='h6' style={{ color: theme.palette.common.blue }}>
-          {props.title}
-        </Typography>
-        <Typography variant='subtitle2'>{props.description}</Typography>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <PeopleIcon
-            size='small'
-            color='secondary'
-            style={{ marginRight: '2px' }}
+    <React.Fragment>
+      <Card
+        className={classes.root}
+        style={{ maxWidth: props.width ? props.width : '25em' }}
+      >
+        <CardActionArea>
+          <CardMedia
+            style={{ height: props.height ? props.height : 125, width: '100%' }}
+            image={props.image}
+            title='community image'
           />
-          <Typography display='inline' variant='subtitle1'>
-            {props.members} Members
+        </CardActionArea>
+        <CardContent className={classes.content}>
+          <Typography variant='h6' style={{ color: theme.palette.common.blue }}>
+            {props.title}
           </Typography>
-          {props.isFounder && (
-            <Button variant='outlined' onClick={props.deleteCommunity} className={classes.deleteButton}>
-              Delete
+          <Typography variant='subtitle2'>{props.description}</Typography>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <PeopleIcon
+              size='small'
+              color='secondary'
+              style={{ marginRight: '2px' }}
+            />
+            <Typography display='inline' variant='subtitle1'>
+              {props.members} Members
+            </Typography>
+            {props.isFounder && (
+              <Button
+                variant='outlined'
+                onClick={() => setOpen(true)}
+                className={classes.deleteButton}
+              >
+                Delete
+              </Button>
+            )}
+          </div>
+        </CardContent>
+        <CardActions>
+          {props.isMember ? null : (
+            <Button
+              onClick={
+                props.isAuth
+                  ? props.beMember
+                    ? props.beMember
+                    : handleVisit
+                  : goToLogin
+              }
+              fullWidth
+              size='small'
+              variant='contained'
+              className={classes.visit}
+            >
+              {props.buttonText}
             </Button>
           )}
-        </div>
-      </CardContent>
-      <CardActions>
-        {props.isMember ? null : (
-          <Button
-            onClick={
-              props.isAuth
-                ? props.beMember
-                  ? props.beMember
-                  : handleVisit
-                : goToLogin
-            }
-            fullWidth
-            size='small'
-            variant='contained'
-            className={classes.visit}
-          >
-            {props.buttonText}
-          </Button>
-        )}
-      </CardActions>
-    </Card>
+        </CardActions>
+      </Card>
+
+      <Modal
+        aria-labelledby='transition-modal-title'
+        aria-describedby='transition-modal-description'
+        className={classes.modal}
+        open={open}
+        onClose={handleClose}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Fade in={open}>
+          <div className={classes.paper}>
+            <Typography style={{ marginBottom: '2em' }} color='secondary'>
+              Community will be deleted permanently
+            </Typography>
+
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <Button
+                onClick={() => setOpen(false)}
+                style={{ backgroundColor: 'grey', color: 'white' }}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={props.deleteCommunity}
+                style={{ backgroundColor: 'red', color: 'white' }}
+              >
+                Delete
+              </Button>
+            </div>
+          </div>
+        </Fade>
+      </Modal>
+    </React.Fragment>
   );
 };
 

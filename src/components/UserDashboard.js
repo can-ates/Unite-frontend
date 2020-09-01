@@ -103,12 +103,11 @@ const UserDashboard = (props) => {
 
     useEffect(() => {
         setFollowed(props.user.memberships)
-        console.log(props.user)
         if(!props.user.isAuth){
             props.history.push('/')
         }
 
-    }, [props.user.isAuth])
+    }, [props.user, props.history])
 
     const handleRoute = (id) => {
         props.history.push(`/community/${id}`)

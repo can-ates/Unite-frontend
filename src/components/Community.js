@@ -19,6 +19,7 @@ import CommentIcon from '@material-ui/icons/Comment';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
+
 import CardCommunity from './utils/card_community';
 import Auth from '../hoc/Auth';
 
@@ -125,6 +126,7 @@ const useStyles = makeStyles(theme => ({
       width: '100%',
     },
   },
+  
 }));
 
 const Community = React.memo(props => {
@@ -139,8 +141,10 @@ const Community = React.memo(props => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [hideDescription, setHideDescription] = useState(true);
+  
   const [refresh, setRefresh] = useState(null);
 
+  
   //GET COMMUNITY DETAIL & MEMBERS & POSTS
   useEffect(() => {
     props.setValue(1);
@@ -312,7 +316,7 @@ const Community = React.memo(props => {
                 beMember={handleMember}
                 width='100%'
                 height={150}
-                deleteCommunity={() => deleteCommunity()}
+                deleteCommunity={deleteCommunity}
                 isAuth={props.user.isAuth}
                 isFounder={community.founder === props.user.id}
                 isMember={member.isMember}
@@ -396,6 +400,7 @@ const Community = React.memo(props => {
           </Grid>
         </Grid>
       </Grid>
+     
     </div>
   );
 });
