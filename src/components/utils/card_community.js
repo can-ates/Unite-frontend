@@ -116,4 +116,4 @@ const CardCommunity = props => {
   );
 };
 
-export default withRouter(CardCommunity);
+export default React.memo(withRouter(CardCommunity));

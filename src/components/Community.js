@@ -283,7 +283,7 @@ const Community = React.memo(props => {
   };
 
 
-  const deleteCommunity =() => {
+  const deleteCommunity = () => {
     axios
     .delete(`/api/community/${props.match.params.id}`, { withCredentials: true })
     .then(res => {

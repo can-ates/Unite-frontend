@@ -16,6 +16,8 @@ import Button from '@material-ui/core/Button';
 
 import IconButton from '@material-ui/core/IconButton';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import CardCommunity from './utils/card_community';
@@ -120,6 +122,14 @@ const useStyles = makeStyles(theme => ({
       width: '100%',
     },
   },
+  saveButton:{
+    backgroundColor: theme.palette.common.blue, 
+    color: 'white',
+    '&:hover' : {
+      color: theme.palette.common.orange,
+      backgroundColor: theme.palette.common.blue, 
+    }
+  }
 }));
 
 const Post = props => {
@@ -134,8 +144,12 @@ const Post = props => {
   const [comments, setComments] = useState([]);
   const [comment, setComment] = useState('');
 
+  const [showForm, setShowForm] = useState(false);
+  const [newTitle, setNewTitle] = useState('')
+  const [newDescription, setNewDescription] = useState('')
   const [refresh, setRefresh] = useState('');
 
+  //CHECK IF THE CURRENT USER IS MEMBER OF COMMUNITY AND GET DETAILS
   useEffect(() => {
     axios
       .get(`/api/community/auth/${props.match.params.id}`, {
@@ -146,7 +160,7 @@ const Post = props => {
       });
   }, [refresh, props.match.params.id]);
 
-  //For community
+  //GET COMMUNITY
   useEffect(() => {
     props.setValue(1);
 
@@ -157,7 +171,7 @@ const Post = props => {
       });
   }, [refresh, props.match.params.id]);
 
-  //For Post
+  //GET PARTICULAR POST
   useEffect(() => {
     axios
       .get(`/api/post/${props.match.params.postId}`, { withCredentials: true })
@@ -167,6 +181,7 @@ const Post = props => {
       });
   }, [refresh, props.match.params.postId]);
 
+  //HANDLE BEING MEMBER OF COMMUNITY
   const handleMember = () => {
     axios
       .post(`/api/community/${props.match.params.id}/beMember`, {
@@ -177,6 +192,7 @@ const Post = props => {
       });
   };
 
+  //HANDLE COMMENT ROUTE
   const handleComment = () => {
     let dataToSubmit = {
       text: comment,
@@ -194,6 +210,28 @@ const Post = props => {
       });
   };
 
+  const editPost = () => {
+    let dataToSubmit = {
+      title: newTitle,
+      description: newDescription
+    }
+
+    axios
+    .put(`/api/post/${props.match.params.postId}`, 
+    {
+      dataToSubmit
+    },
+    {
+      withCredentials: true,
+    })
+    .then(res => {
+      
+      setShowForm(false)
+      setRefresh(res.data);
+    });
+  }
+
+  //RENDER COMMENTS
   const showComments = () =>
     comments
       ? comments.map((comment, i) => (
@@ -256,6 +294,7 @@ const Post = props => {
   return (
     <div className={classes.back}>
       <Grid container direction='row' className={classes.postContainer}>
+        {/* CARD OF COMMUNITY DETAILS AND MEMBERS */}
         <Grid item md={4} xs={12} className={classes.Info}>
           <Grid
             item
@@ -286,10 +325,11 @@ const Post = props => {
             </Grid>
           </Grid>
         </Grid>
+        {/* POST */}
         <Grid item md={8} className={classes.posts}>
           <Grid item container direction='column'>
             <Grid item>
-              {post ? (
+              {post && (
                 <Card className={classes.postCard}>
                   <Grid container direction='column'>
                     <Grid
@@ -310,8 +350,10 @@ const Post = props => {
                             title={
                               <Typography
                                 variant='caption'
-                                display='inline'
-                              >{`${post.author.name} ${post.author.lastname}`}</Typography>
+                                display='inline-block'
+                              >
+                                {`${post.author.name} ${post.author.lastname}`}
+                              </Typography>
                             }
                             disableTypography
                           />
@@ -320,9 +362,22 @@ const Post = props => {
                     </Grid>
                     <Grid item>
                       <CardContent style={{ paddingTop: '0' }}>
-                        <Typography variant='h3' style={{ color: 'black' }}>
-                          {post.title}
-                        </Typography>
+                        {showForm ? (
+                          <InputBase
+                        value={newTitle}
+                        placeholder={post.title}
+                        type='text'
+                        fullWidth
+                        style={{border: `1px solid ${theme.palette.primary.main}`}}
+                        onChange={e => setNewTitle(e.target.value)}
+                        className={classes.commentInput}
+                      />
+                        ) : (
+                          <Typography variant='h3' style={{ color: 'black' }}>
+                            {post.title}
+                          </Typography>
+                        )}
+
                         <Typography
                           style={{
                             fontSize: '1rem',
@@ -333,18 +388,51 @@ const Post = props => {
                         >
                           {moment(post.createdAt).fromNow()}
                         </Typography>
-                        <Typography
-                          align='left'
-                          variant='caption'
-                          style={{ fontWeight: 500 }}
-                        >
-                          {post.description}
-                        </Typography>
+                        {showForm ? (
+                          <InputBase
+                        value={newDescription}
+                        placeholder={post.description}
+                        type='text'
+                        fullWidth
+                        multiline={true}
+                        rows='2'
+                        style={{border: `1px solid ${theme.palette.primary.main}`}}
+                        rowsMax='10'
+                        onChange={e => setNewDescription(e.target.value)}
+                        className={classes.commentInput}
+                      />
+                        ) : (
+                          <Typography
+                            align='left'
+                            variant='caption'
+                            style={{ fontWeight: 500 }}
+                          >
+                            {post.description}
+                          </Typography>
+                        )}
                       </CardContent>
+                    </Grid>
+                    <Grid item>
+                      {post.author._id === props.user.id && (
+                        <div
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'flex-end',
+                          }}
+                        >
+                          {showForm && <Button onClick={editPost} className={classes.saveButton} variant='contained' disabled={!newTitle || !newDescription} >Save</Button>}
+                          <Button onClick={() => setShowForm(pr => !pr)}>
+                            <EditIcon  style={{ color: 'orange' }} />
+                          </Button>
+                          <Button>
+                            <DeleteIcon style={{ color: 'red' }} />
+                          </Button>
+                        </div>
+                      )}
                     </Grid>
                   </Grid>
                 </Card>
-              ) : null}
+              )}
             </Grid>
 
             <Grid item>{showComments()}</Grid>
@@ -387,4 +475,4 @@ const Post = props => {
   );
 };
 
-export default Auth(Post, false);
+export default Auth(React.memo(Post), false);
