@@ -154,7 +154,6 @@ const Community = React.memo(props => {
       .then(res => {
         setCommunity(res.data.community);
         setPosts(res.data.community.posts);
-        console.log(res.data.community.founder, props.user);
       });
   }, [refresh, props.match.params.id]);
 
@@ -292,6 +291,16 @@ const Community = React.memo(props => {
     .delete(`/api/community/${props.match.params.id}`, { withCredentials: true })
     .then(res => {
       res.data.success && props.history.push('/')
+      if(res.data.success) {
+        let img = community.image.split('/')[7].split('.')[0]
+
+        axios.post('/api/community/deleteImage', {
+          public_id: img
+        })
+        .then(res => {
+          res.data.message && props.history.push('/')
+        })
+      }
     });
   }
 
