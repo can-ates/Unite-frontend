@@ -95,7 +95,8 @@ const JoinUs = props => {
 
   const classes = useStyles();
 
-  const handleRegister = () => {
+  const handleRegister = e => {
+    e.preventDefault();
     props
       .dispatch(actions.registerUser({ name, lastname, email, password }))
       .then(response => {
@@ -108,7 +109,8 @@ const JoinUs = props => {
       });
   };
 
-  const handleLogin = () => {
+  const handleLogin = e => {
+    e.preventDefault();
     props
       .dispatch(
         actions.loginUser({ email: loginEmail, password: loginPassword })
@@ -144,106 +146,110 @@ const JoinUs = props => {
             </Grid>
             <Grid item>
               <Card className={classes.root}>
-                <CardContent>
-                  <Grid
-                    item
-                    container
-                    direction='column'
-                    className={classes.Fields}
-                  >
-                    <Grid item>
-                      <Typography
-                        variant='body2'
-                        align='center'
-                        style={{ marginTop: '1.5em' }}
-                      >
-                        Create an account
-                      </Typography>
-                    </Grid>
-                    <Grid item>
-                      <TextField
-                        label='Name'
-                        fullWidth
-                        required
-                        type='text'
-                        id='name'
-                        name='name'
-                        value={name}
-                        onChange={e => setName(e.target.value)}
-                        style={{ marginBottom: '1.5em', marginTop: '2em' }}
-                      />
-                    </Grid>
-                    <Grid item>
-                      <TextField
-                        label='Last name'
-                        fullWidth
-                        type='text'
-                        required
-                        id='lastname'
-                        name='lastname'
-                        value={lastname}
-                        onChange={e => setLastName(e.target.value)}
-                        style={{ marginBottom: '1.5em' }}
-                      />
-                    </Grid>
-                    <Grid item>
-                      <TextField
-                        label='Email'
-                        fullWidth
-                        type='email'
-                        error={emailHelper ? true : false}
-                        helperText={emailHelper ? emailHelper : null}
-                        id='emailRegister'
-                        required
-                        name='email'
-                        value={email}
-                        onChange={e => {
-                          setEmail(e.target.value);
-                          setEmailHelper('');
-                        }}
-                        style={{ marginBottom: '1.5em' }}
-                      />
-                    </Grid>
-                    <Grid item>
-                      <TextField
-                        label='Password'
-                        fullWidth
-                        type='password'
-                        error={passwordHelper ? true : false}
-                        helperText={passwordHelper ? passwordHelper : null}
-                        required
-                        id='passwordRegister'
-                        name='password'
-                        value={password}
-                        onChange={e => {
-                          setPassword(e.target.value);
-                          setPasswordHelper('');
-                        }}
-                        style={{ marginBottom: '1em' }}
-                      />
-                    </Grid>
-                    <Grid item>
-                      <CardActions>
-                        <Button
-                          onClick={() => handleRegister()}
-                          color='primary'
-                          variant='contained'
-                          style={{
-                            margin: '2em auto 0 auto',
-                            minWidth: '15em',
-                            color: 'white',
-                          }}
-                          size='large'
-                          disabled={
-                            name && lastname && password && email ? false : true
-                          }
+                <form onSubmit={handleRegister}>
+                  <CardContent>
+                    <Grid
+                      item
+                      container
+                      direction='column'
+                      className={classes.Fields}
+                    >
+                      <Grid item>
+                        <Typography
+                          variant='body2'
+                          align='center'
+                          style={{ marginTop: '1.5em' }}
                         >
-                          Register
-                        </Button>
-                      </CardActions>
+                          Create an account
+                        </Typography>
+                      </Grid>
+                      <Grid item>
+                        <TextField
+                          label='Name'
+                          fullWidth
+                          required
+                          type='text'
+                          id='name'
+                          name='name'
+                          value={name}
+                          onChange={e => setName(e.target.value)}
+                          style={{ marginBottom: '1.5em', marginTop: '2em' }}
+                        />
+                      </Grid>
+                      <Grid item>
+                        <TextField
+                          label='Last name'
+                          fullWidth
+                          type='text'
+                          required
+                          id='lastname'
+                          name='lastname'
+                          value={lastname}
+                          onChange={e => setLastName(e.target.value)}
+                          style={{ marginBottom: '1.5em' }}
+                        />
+                      </Grid>
+                      <Grid item>
+                        <TextField
+                          label='Email'
+                          fullWidth
+                          type='email'
+                          error={emailHelper ? true : false}
+                          helperText={emailHelper ? emailHelper : null}
+                          id='emailRegister'
+                          required
+                          name='email'
+                          value={email}
+                          onChange={e => {
+                            setEmail(e.target.value);
+                            setEmailHelper('');
+                          }}
+                          style={{ marginBottom: '1.5em' }}
+                        />
+                      </Grid>
+                      <Grid item>
+                        <TextField
+                          label='Password'
+                          fullWidth
+                          type='password'
+                          error={passwordHelper ? true : false}
+                          helperText={passwordHelper ? passwordHelper : null}
+                          required
+                          id='passwordRegister'
+                          name='password'
+                          value={password}
+                          onChange={e => {
+                            setPassword(e.target.value);
+                            setPasswordHelper('');
+                          }}
+                          style={{ marginBottom: '1em' }}
+                        />
+                      </Grid>
+                      <Grid item>
+                        <CardActions>
+                          <Button
+                            type='submit'
+                            color='primary'
+                            variant='contained'
+                            style={{
+                              margin: '2em auto 0 auto',
+                              minWidth: '15em',
+                              color: 'white',
+                            }}
+                            size='large'
+                            disabled={
+                              name && lastname && password && email
+                                ? false
+                                : true
+                            }
+                          >
+                            Register
+                          </Button>
+                        </CardActions>
+                      </Grid>
                     </Grid>
-                  </Grid>
-                </CardContent>
+                  </CardContent>
+                </form>
               </Card>
             </Grid>
           </Grid>
@@ -266,80 +272,85 @@ const JoinUs = props => {
             </Grid>
             <Grid item>
               <Card className={classes.root}>
-                <CardContent>
-                  <Grid
-                    item
-                    container
-                    direction='column'
-                    className={classes.Fields}
-                  >
-                    <Grid item>
-                      <Typography
-                        variant='body2'
-                        align='center'
-                        style={{ marginTop: '1.5em' }}
-                      >
-                        Already have an account ?
-                      </Typography>
-                    </Grid>
-                    <Grid item>
-                      <Snackbar
-                        className={classes.errorMessage}
-                        open={open}
-                        autoHideDuration={6000}
-                        onClose={handleClose}
-                      >
-                        <Alert onClose={handleClose} severity='error'>
-                          {loginError}
-                        </Alert>
-                      </Snackbar>
-                    </Grid>
-                    <Grid item>
-                      <TextField
-                        label='Email'
-                        fullWidth
-                        type='email'
-                        id='emailLogin'
-                        required
-                        name='email'
-                        value={loginEmail}
-                        onChange={e => setLoginEmail(e.target.value)}
-                        style={{ marginBottom: '1.5em', marginTop: '2em' }}
-                      />
-                    </Grid>
-                    <Grid item>
-                      <TextField
-                        label='Password'
-                        fullWidth
-                        type='password'
-                        required
-                        id='passwordLogin'
-                        name='password'
-                        value={loginPassword}
-                        onChange={e => setLoginPassword(e.target.value)}
-                        style={{ marginBottom: '1em' }}
-                      />
-                    </Grid>
-                    <Grid item>
-                      <CardActions>
-                        <Button
-                          onClick={() => handleLogin()}
-                          color='primary'
-                          variant='contained'
-                          style={{
-                            margin: '2em auto 0 auto',
-                            minWidth: '15em',
-                            color: 'white',
-                          }}
-                          size='large'
-                          disabled={loginPassword && loginEmail ? false : true}
+                <form onSubmit={handleLogin}>
+                  <CardContent>
+                    <Grid
+                      item
+                      container
+                      direction='column'
+                      className={classes.Fields}
+                    >
+                      <Grid item>
+                        <Typography
+                          variant='body2'
+                          align='center'
+                          style={{ marginTop: '1.5em' }}
                         >
-                          Login
-                        </Button>
-                      </CardActions>
+                          Already have an account ?
+                        </Typography>
+                      </Grid>
+                      <Grid item>
+                        <Snackbar
+                          className={classes.errorMessage}
+                          open={open}
+                          autoHideDuration={6000}
+                          onClose={handleClose}
+                        >
+                          <Alert onClose={handleClose} severity='error'>
+                            {loginError}
+                          </Alert>
+                        </Snackbar>
+                      </Grid>
+
+                      <Grid item>
+                        <TextField
+                          label='Email'
+                          fullWidth
+                          type='email'
+                          id='emailLogin'
+                          required
+                          name='email'
+                          value={loginEmail}
+                          onChange={e => setLoginEmail(e.target.value)}
+                          style={{ marginBottom: '1.5em', marginTop: '2em' }}
+                        />
+                      </Grid>
+                      <Grid item>
+                        <TextField
+                          label='Password'
+                          fullWidth
+                          type='password'
+                          required
+                          id='passwordLogin'
+                          name='password'
+                          value={loginPassword}
+                          onChange={e => setLoginPassword(e.target.value)}
+                          style={{ marginBottom: '1em' }}
+                        />
+                      </Grid>
+                      <Grid item>
+                        <CardActions>
+                          <Button
+                            type='submit'
+                            color='primary'
+                            variant='contained'
+                            style={{
+                              margin: '2em auto 0 auto',
+                              minWidth: '15em',
+                              color: 'white',
+                            }}
+                            size='large'
+                            disabled={
+                              loginPassword && loginEmail ? false : true
+                            }
+                          >
+                            Login
+                          </Button>
+                        </CardActions>
+                      </Grid>
                     </Grid>
-                  </Grid>
-                </CardContent>
+                  </CardContent>
+                </form>
               </Card>
             </Grid>
           </Grid>

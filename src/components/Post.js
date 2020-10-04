@@ -25,7 +25,7 @@ import Fade from '@material-ui/core/Fade';
 
 import CardCommunity from './utils/card_community';
 import ShowMembers from './utils/show_members';
-import Comments from './utils/Comments'
+import Comments from './utils/Comments';
 
 import Auth from '../hoc/Auth';
 
@@ -166,7 +166,7 @@ const Post = props => {
   const [showForm, setShowForm] = useState(false);
   const [newTitle, setNewTitle] = useState('');
   const [newDescription, setNewDescription] = useState('');
-  
+
   const [refresh, setRefresh] = useState('');
   const [open, setOpen] = useState(false);
 
@@ -176,49 +176,38 @@ const Post = props => {
 
   //CHECK IF THE CURRENT USER IS MEMBER OF COMMUNITY AND GET DETAILS
   useEffect(() => {
-    axios
-      .get(`/api/community/auth/${props.match.params.id}`, {
-        withCredentials: true,
-      })
-      .then(res => {
-        setMember(res.data);
-      });
+    axios.get(`/api/community/auth/${props.match.params.id}`).then(res => {
+      setMember(res.data);
+    });
   }, [refresh, props.match.params.id]);
 
   //GET COMMUNITY
   useEffect(() => {
     props.setValue(1);
 
-    axios
-      .get(`/api/community/${props.match.params.id}`, { withCredentials: true })
-      .then(res => {
-        setCommunity(res.data.community);
-      });
+    axios.get(`/api/community/${props.match.params.id}`).then(res => {
+      setCommunity(res.data.community);
+    });
   }, [refresh, props.match.params.id]);
 
   //GET PARTICULAR POST
   useEffect(() => {
-    axios
-      .get(`/api/post/${props.match.params.postId}`, { withCredentials: true })
-      .then(res => {
-        setComments(res.data.post.comments);
-        setPost(res.data.post);
-      });
+    axios.get(`/api/post/${props.match.params.postId}`).then(res => {
+      setComments(res.data.post.comments);
+      setPost(res.data.post);
+    });
   }, [refresh, props.match.params.postId]);
 
   //HANDLE BEING MEMBER OF COMMUNITY
   const handleMember = () => {
-    axios
-      .post(`/api/community/${props.match.params.id}/beMember`, {
-        withCredentials: true,
-      })
-      .then(res => {
-        setRefresh(res.data);
-      });
+    axios.post(`/api/community/${props.match.params.id}/beMember`).then(res => {
+      setRefresh(res.data);
+    });
   };
 
   //HANDLE COMMENT ROUTE
-  const handleComment = () => {
+  const handleComment = e => {
+    e.preventDefault();
     let dataToSubmit = {
       text: comment,
     };
@@ -226,8 +215,7 @@ const Post = props => {
     axios
       .post(
         `/api/${props.match.params.id}/post/${props.match.params.postId}/add-comment`,
-        dataToSubmit,
-        { withCredentials: true }
+        dataToSubmit
       )
       .then(res => {
         setRefresh(res.data);
@@ -241,19 +229,12 @@ const Post = props => {
       title: newTitle,
       description: newDescription,
     };
-    
+
     axios
-      .put(
-        `/api/post/${props.match.params.postId}`,
-        {
-          dataToSubmit,
-        },
-        {
-          withCredentials: true,
-        }
-      )
+      .put(`/api/post/${props.match.params.postId}`, {
+        dataToSubmit,
+      })
       .then(res => {
-       
         setShowForm(false);
         setRefresh(res.data);
       });
@@ -276,7 +257,6 @@ const Post = props => {
 
   //UPDATE COMMENT
   const editComment = (id, newComment) => {
-   
     let dataToSubmit = {
       _id: id,
       text: newComment,
@@ -285,16 +265,15 @@ const Post = props => {
     axios
       .post(
         `/api/${props.match.params.id}/post/${props.match.params.postId}/update-comment`,
-        dataToSubmit,
-        { withCredentials: true }
+        dataToSubmit
       )
       .then(res => {
         setRefresh(res.data);
       });
-  }
+  };
 
   //DELETE COMMENT
-  const deleteComment = (id) => {
+  const deleteComment = id => {
     let dataToSubmit = {
       _id: id,
     };
@@ -302,23 +281,18 @@ const Post = props => {
     axios
       .post(
         `/api/${props.match.params.id}/post/${props.match.params.postId}/delete-comment`,
-        dataToSubmit,
-        { withCredentials: true }
+        dataToSubmit
       )
       .then(res => {
         setRefresh(res.data);
       });
-  }
+  };
 
   //DELETE COMMUNITY
   const deleteCommunity = () => {
-    axios
-      .delete(`/api/community/${props.match.params.id}`, {
-        withCredentials: true,
-      })
-      .then(res => {
-        res.data.success && props.history.push('/');
-      });
+    axios.delete(`/api/community/${props.match.params.id}`).then(res => {
+      res.data.success && props.history.push('/');
+    });
   };
 
   //RENDER COMMENTS
@@ -330,7 +304,7 @@ const Post = props => {
             key={`${comment._id}-${i}`}
             user={props.user}
             editComment={(id, comment) => editComment(id, comment)}
-            deleteComment={(id) => deleteComment(id)}
+            deleteComment={id => deleteComment(id)}
           />
         ))
       : null;
@@ -498,29 +472,33 @@ const Post = props => {
             >
               {member
                 ? member.isMember && (
-                    <Paper className={classes.comment}>
-                      <IconButton aria-label='user'>
-                        <AccountCircleIcon color='secondary' fontSize='large' />
-                      </IconButton>
-                      <InputBase
-                        value={comment}
-                        placeholder='Your comment here'
-                        type='text'
-                        fullWidth
-                        onChange={e => setComment(e.target.value)}
-                        className={classes.commentInput}
-                      />
+                    <form onSubmit={handleComment}>
+                      <Paper className={classes.comment}>
+                        <IconButton aria-label='user'>
+                          <AccountCircleIcon
+                            color='secondary'
+                            fontSize='large'
+                          />
+                        </IconButton>
+                        <InputBase
+                          value={comment}
+                          placeholder='Your comment here'
+                          type='text'
+                          fullWidth
+                          onChange={e => setComment(e.target.value)}
+                          className={classes.commentInput}
+                        />
 
-                      <Button
-                        type='submit'
-                        variant='outlined'
-                        aria-label='comment'
-                        className={classes.commentButton}
-                        onClick={handleComment}
-                      >
-                        Send
-                      </Button>
-                    </Paper>
+                        <Button
+                          type='submit'
+                          variant='outlined'
+                          aria-label='comment'
+                          className={classes.commentButton}
+                        >
+                          Send
+                        </Button>
+                      </Paper>
+                    </form>
                   )
                 : null}
             </Grid>

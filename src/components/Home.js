@@ -104,7 +104,7 @@ const Home = (props) => {
     const [communities, setCommunities] = useState(null)
 
     useEffect(() => {
-        axios.get('/api/allCommunities?limit=3&sortBy=members&order=desc', {withCredentials: true})
+        axios.get('/api/allCommunities?limit=3&sortBy=members&order=desc')
         .then((res) => {
             setCommunities(res.data.community)
         })

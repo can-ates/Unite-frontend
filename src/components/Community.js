@@ -150,7 +150,7 @@ const Community = React.memo(props => {
     props.setValue(1);
 
     axios
-      .get(`/api/community/${props.match.params.id}`, { withCredentials: true })
+      .get(`/api/community/${props.match.params.id}`)
       .then(res => {
         setCommunity(res.data.community);
         setPosts(res.data.community.posts);
@@ -160,9 +160,7 @@ const Community = React.memo(props => {
   //CHECK IF CURRENT USER IS THE MEMBER OF CURRENT COMMUNITY
   useEffect(() => {
     axios
-      .get(`/api/community/auth/${props.match.params.id}`, {
-        withCredentials: true,
-      })
+      .get(`/api/community/auth/${props.match.params.id}`)
       .then(res => {
         setMember(res.data);
       });
@@ -171,9 +169,7 @@ const Community = React.memo(props => {
   //BE FOLLOWER OF CURRENT COMMUNITY
   const handleMember = () => {
     axios
-      .post(`/api/community/${props.match.params.id}/beMember`, {
-        withCredentials: true,
-      })
+      .post(`/api/community/${props.match.params.id}/beMember`)
       .then(res => {
         setRefresh(res.data);
       });
@@ -188,9 +184,7 @@ const Community = React.memo(props => {
     };
 
     axios
-      .post(`/api/post/${props.match.params.id}/create-post`, dataToSubmit, {
-        withCredentials: true,
-      })
+      .post(`/api/post/${props.match.params.id}/create-post`, dataToSubmit)
       .then(res => {
         setRefresh(res.data);
         setHideDescription(true);

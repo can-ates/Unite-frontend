@@ -81,7 +81,7 @@ const Communities = (props) => {
     
 
     useEffect(() => {
-        axios.get('/api/allCommunities?limit=9&skip=0&sortBy=members&order=desc', {withCredentials: true})
+        axios.get('/api/allCommunities?limit=9&skip=0&sortBy=members&order=desc')
         .then((res) => {
             setCommunities(res.data.community)
         })
@@ -90,7 +90,7 @@ const Communities = (props) => {
     const showCards = (a) => {
         let sk = skip + a 
 
-        axios.get(`/api/allCommunities?limit=9&skip=${sk}&sortBy=members&order=desc`, {withCredentials: true})
+        axios.get(`/api/allCommunities?limit=9&skip=${sk}&sortBy=members&order=desc`)
         .then((res) => {
             setCommunities(res.data.community)
             setSkip(sk)

@@ -81,7 +81,7 @@ const SearchCommunity = () => {
 
         if(e.target.value !== ''){
             setLoading(true)
-            axios.get(`/api/searchCommunities?limit=5&sortBy=${e.target.value}&order=desc`, {withCredentials: true})
+            axios.get(`/api/searchCommunities?limit=5&sortBy=${e.target.value}&order=desc`)
             .then((res) => {
                 setSearchResult(res.data.community)
                 setLoading(res.data ? false : true)

@@ -76,36 +76,38 @@ const CreateCommunity = props => {
 
   useEffect(() => {
     props.setValue(1);
-  });
+  }, []);
 
-  const onDrop = useCallback(acceptedFile => {
-    let formData = new FormData();
-    const config = {
-      header: { 'content-type': 'multipart/form-data' },
-    };
-    formData.append('file', acceptedFile[0]);
-    setLoading(true);
-    if (file.url) {
-      axios.post('/api/community/deleteImage', file, {
-        withCredentials: true,
-      });
-    }
-    axios
-      .post('/api/community/uploadImage', formData, config, {
-        withCredentials: true,
-      })
-      .then(res => {
-        setFile(res.data);
-        setLoading(false);
-      });
-  }, [file]);
+  const onDrop = useCallback(
+    acceptedFile => {
+      let formData = new FormData();
+      const config = {
+        header: { 'content-type': 'multipart/form-data' },
+      };
+      formData.append('file', acceptedFile[0]);
+      setLoading(true);
+      if (file.url) {
+        axios.post('/api/community/deleteImage', file, {
+          withCredentials: true,
+        });
+      }
+      axios
+        .post('/api/community/uploadImage', formData, config)
+        .then(res => {
+          setFile(res.data);
+          setLoading(false);
+        });
+    },
+    [file]
+  );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     multiple: false,
   });
 
-  const handleSubmit = () => {
+  const handleSubmit = e => {
+    e.preventDefault()
     const dataToSubmit = {
       title,
       description,
@@ -114,9 +116,7 @@ const CreateCommunity = props => {
 
     if (props.user.isAuth) {
       axios
-        .post('/api/community/add-community', dataToSubmit, {
-          withCredentials: true,
-        })
+        .post('/api/community/add-community', dataToSubmit)
         .then(res => {
           props.history.push(`/community/${res.data.doc._id}`);
         });
@@ -142,74 +142,76 @@ const CreateCommunity = props => {
         </Grid>
         <Grid item>
           <Card className={classes.card}>
-            <CardContent>
-              <Grid item container direction='column'>
-                <Grid item>
-                  <Card
-                    className={classes.coverPhoto}
-                    style={{
-                      backgroundImage: file ? `url(${file.url})` : null,
-                      backgroundSize: 'cover',
-                      backgroundPosition: 'center',
-                    }}
-                  >
-                    <CardActions style={{ height: '100%' }}>
-                      <section {...getRootProps()} style={{ margin: 'auto' }}>
-                        <input {...getInputProps()} />
-                        {isDragActive ? (
-                          <p>Drop the image here...</p>
-                        ) : loading ? (
-                          <CircularProgress />
-                        ) : (
-                          <Button
-                            variant='outlined'
-                            className={classes.coverButton}
-                            component='span'
-                          >
-                            Add Cover Photo
-                          </Button>
-                        )}
-                      </section>
-                    </CardActions>
-                  </Card>
-                </Grid>
-                <Grid item>
-                  <TextField
-                    value={title}
-                    onChange={e => setTitle(e.target.value)}
-                    label="What will be your community's title"
-                    fullWidth
-                    type='text'
-                    id='title'
-                    required
-                    name='title'
-                  />
-                </Grid>
-                <Grid item style={{ marginTop: '2em' }}>
-                  <TextField
-                    value={description}
-                    onChange={e => setDescription(e.target.value)}
-                    label='Describe it in 200 characters or less'
-                    fullWidth
-                    type='text'
-                    id='description'
-                    required
-                    name='description'
-                  />
-                </Grid>
-                <Grid item>
-                  <CardActions>
-                    <Button
-                      style={{ marginTop: '3em' }}
-                      onClick={handleSubmit}
-                      disabled={file && title && description ? false : true}
+            <form onSubmit={handleSubmit}>
+              <CardContent>
+                <Grid item container direction='column'>
+                  <Grid item>
+                    <Card
+                      className={classes.coverPhoto}
+                      style={{
+                        backgroundImage: file ? `url(${file.url})` : null,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                      }}
                     >
-                      Create Community
-                    </Button>
-                  </CardActions>
+                      <CardActions style={{ height: '100%' }}>
+                        <section {...getRootProps()} style={{ margin: 'auto' }}>
+                          <input {...getInputProps()} />
+                          {isDragActive ? (
+                            <p>Drop the image here...</p>
+                          ) : loading ? (
+                            <CircularProgress />
+                          ) : (
+                            <Button
+                              variant='outlined'
+                              className={classes.coverButton}
+                              component='span'
+                            >
+                              Add Cover Photo
+                            </Button>
+                          )}
+                        </section>
+                      </CardActions>
+                    </Card>
+                  </Grid>
+                  <Grid item>
+                    <TextField
+                      value={title}
+                      onChange={e => setTitle(e.target.value)}
+                      label="What will be your community's title"
+                      fullWidth
+                      type='text'
+                      id='title'
+                      required
+                      name='title'
+                    />
+                  </Grid>
+                  <Grid item style={{ marginTop: '2em' }}>
+                    <TextField
+                      value={description}
+                      onChange={e => setDescription(e.target.value)}
+                      label='Describe it in 200 characters or less'
+                      fullWidth
+                      type='text'
+                      id='description'
+                      required
+                      name='description'
+                    />
+                  </Grid>
+                  <Grid item>
+                    <CardActions>
+                      <Button
+                        type='submit'
+                        style={{ marginTop: '3em' }}
+                        disabled={file && title && description ? false : true}
+                      >
+                        Create Community
+                      </Button>
+                    </CardActions>
+                  </Grid>
                 </Grid>
-              </Grid>
-            </CardContent>
+              </CardContent>
+            </form>
           </Card>
         </Grid>
       </Grid>
