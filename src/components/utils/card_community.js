@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { withRouter } from 'react-router-dom';
 
 import { makeStyles, useTheme } from '@material-ui/core/styles';
@@ -69,8 +69,7 @@ const useStyles = makeStyles(theme => ({
 const CardCommunity = props => {
   const classes = useStyles();
   const theme = useTheme();
-  const [open, setOpen] = useState(false)
-
+  const [open, setOpen] = useState(false);
 
   const handleClose = () => {
     setOpen(false);
@@ -90,13 +89,13 @@ const CardCommunity = props => {
         className={classes.root}
         style={{ maxWidth: props.width ? props.width : '25em' }}
       >
-        <CardActionArea>
-          <CardMedia
-            style={{ height: props.height ? props.height : 125, width: '100%' }}
-            image={props.image}
-            title='community image'
-          />
-        </CardActionArea>
+        <CardMedia
+          style={{ height: 200, objectFit: 'contain', }}
+          image={props.image}
+          component='img'
+          title='community image'
+        />
+
         <CardContent className={classes.content}>
           <Typography variant='h6' style={{ color: theme.palette.common.blue }}>
             {props.title}

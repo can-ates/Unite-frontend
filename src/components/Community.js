@@ -19,7 +19,6 @@ import CommentIcon from '@material-ui/icons/Comment';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
-
 import CardCommunity from './utils/card_community';
 import Auth from '../hoc/Auth';
 
@@ -126,7 +125,6 @@ const useStyles = makeStyles(theme => ({
       width: '100%',
     },
   },
-  
 }));
 
 const Community = React.memo(props => {
@@ -141,38 +139,31 @@ const Community = React.memo(props => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [hideDescription, setHideDescription] = useState(true);
-  
+
   const [refresh, setRefresh] = useState(null);
 
-  
   //GET COMMUNITY DETAIL & MEMBERS & POSTS
   useEffect(() => {
     props.setValue(1);
 
-    axios
-      .get(`/api/community/${props.match.params.id}`)
-      .then(res => {
-        setCommunity(res.data.community);
-        setPosts(res.data.community.posts);
-      });
+    axios.get(`/api/community/${props.match.params.id}`).then(res => {
+      setCommunity(res.data.community);
+      setPosts(res.data.community.posts);
+    });
   }, [refresh, props.match.params.id]);
 
   //CHECK IF CURRENT USER IS THE MEMBER OF CURRENT COMMUNITY
   useEffect(() => {
-    axios
-      .get(`/api/community/auth/${props.match.params.id}`)
-      .then(res => {
-        setMember(res.data);
-      });
+    axios.get(`/api/community/auth/${props.match.params.id}`).then(res => {
+      setMember(res.data);
+    });
   }, [refresh, props.match.params.id]);
 
   //BE FOLLOWER OF CURRENT COMMUNITY
   const handleMember = () => {
-    axios
-      .post(`/api/community/${props.match.params.id}/beMember`)
-      .then(res => {
-        setRefresh(res.data);
-      });
+    axios.post(`/api/community/${props.match.params.id}/beMember`).then(res => {
+      setRefresh(res.data);
+    });
   };
 
   //SUBMIT POST TO THE CURRENT COMMUNITY
@@ -279,24 +270,26 @@ const Community = React.memo(props => {
     props.history.push(`/community/${props.match.params.id}/post/${a}`);
   };
 
-
   const deleteCommunity = () => {
     axios
-    .delete(`/api/community/${props.match.params.id}`, { withCredentials: true })
-    .then(res => {
-      res.data.success && props.history.push('/')
-      if(res.data.success) {
-        let img = community.image.split('/')[7].split('.')[0]
+      .delete(`/api/community/${props.match.params.id}`, {
+        withCredentials: true,
+      })
+      .then(res => {
+        res.data.success && props.history.push('/');
+        if (res.data.success) {
+          let img = community.image.split('/')[7].split('.')[0];
 
-        axios.post('/api/community/deleteImage', {
-          public_id: img
-        })
-        .then(res => {
-          res.data.message && props.history.push('/')
-        })
-      }
-    });
-  }
+          axios
+            .post('/api/community/deleteImage', {
+              public_id: img,
+            })
+            .then(res => {
+              res.data.message && props.history.push('/');
+            });
+        }
+      });
+  };
 
   return (
     <div className={classes.back}>
@@ -318,7 +311,6 @@ const Community = React.memo(props => {
                 buttonText='Be a member'
                 beMember={handleMember}
                 width='100%'
-                height={150}
                 deleteCommunity={deleteCommunity}
                 isAuth={props.user.isAuth}
                 isFounder={community.founder === props.user.id}
@@ -403,7 +395,6 @@ const Community = React.memo(props => {
           </Grid>
         </Grid>
       </Grid>
-     
     </div>
   );
 });
